@@ -36,8 +36,8 @@ impl PosterEngine {
         let cancellation_notice = if req.status_type == "cancelled" {
             let reason = req.cancellation_reason.as_deref().unwrap_or("Ustadz berhalangan hadir");
             format!(
-                r#"<rect x="140" y="{}" width="800" height="90" rx="16" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
-                <text x="540" y="{}" fill="#991b1b" font-family="'Inter', sans-serif" font-weight="bold" font-size="22" text-anchor="middle">PEMBERITAHUAN: {}</text>"#,
+                r##"<rect x="140" y="{}" width="800" height="90" rx="16" fill="#fef2f2" stroke="#f87171" stroke-width="2"/>
+                <text x="540" y="{}" fill="#991b1b" font-family="'Inter', sans-serif" font-weight="bold" font-size="22" text-anchor="middle">PEMBERITAHUAN: {}</text>"##,
                 if is_story { 1100 } else { 620 },
                 if is_story { 1155 } else { 675 },
                 reason
@@ -49,7 +49,7 @@ impl PosterEngine {
         let y_offset: i32 = if is_story { 200 } else { 0 };
 
         format!(
-            r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}">
+            r##"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#064e3b"/>
@@ -101,7 +101,7 @@ impl PosterEngine {
   <text x="540" y="{y_footer}" fill="rgba(255,255,255,0.5)" font-family="'Inter', sans-serif" font-weight="medium" font-size="16" text-anchor="middle">
     DIBUAT DENGAN TARI (TATA ORGANISASI) — MULTI-TENANT SAAS
   </text>
-</svg>"#,
+</svg>"##,
             width = width,
             height = height,
             border_w = width - 80,
