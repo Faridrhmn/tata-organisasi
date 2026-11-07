@@ -1,0 +1,33 @@
+[Unit]
+Description=TARI (Tata Organisasi) Background Scheduler & Social Dispatcher Worker
+Documentation=https://github.com/patrick/web-tari
+After=network.target postgresql.service tari-api.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=tari
+Group=tari
+WorkingDirectory=/opt/tari/current
+EnvironmentFile=/opt/tari/shared/.env
+
+# Menjalankan worker background task
+ExecStart=/opt/tari/current/bin/tari-api --worker-only
+
+# Kebijakan restart otomatis saat terjadi crash
+Restart=always
+RestartSec=5
+
+# Isolasi Keamanan Linux (Systemd Hardening)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/tari/shared
+
+# Batas sumber daya
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+
