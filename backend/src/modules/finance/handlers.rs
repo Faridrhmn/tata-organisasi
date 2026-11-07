@@ -152,7 +152,7 @@ pub async fn create_account(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'finance.create_account', 'financial_account', $3, json_build_object('name', $4, 'initial_balance', $5))
+        VALUES ($1, $2, 'finance.create_account', 'financial_account', $3, json_build_object('name', $4::text, 'initial_balance', $5::bigint))
         "#,
         current_org.organization_id,
         current_org.user_id,
@@ -306,20 +306,23 @@ pub async fn create_transaction(
         SELECT 
             i.id,
             i.account_id,
-            $10::text as account_name,
+            fa.name as account_name,
             i.category_id,
-            $11::text as category_name,
-            $12::text as category_color,
+            tc.name as category_name,
+            tc.color as category_color,
             i.type,
             i.amount,
             i.transaction_date,
             i.description,
             i.receipt_url,
             i.status,
-            NULL::text as created_by_name,
+            u.full_name as created_by_name,
             i.void_reason,
             i.created_at
         FROM inserted i
+        JOIN financial_accounts fa ON fa.id = i.account_id
+        JOIN transaction_categories tc ON tc.id = i.category_id
+        LEFT JOIN users u ON u.id = i.created_by
         "#,
         current_org.organization_id,
         account.id,
@@ -329,10 +332,7 @@ pub async fn create_transaction(
         date,
         desc,
         payload.receipt_url,
-        current_org.user_id,
-        account.name,
-        category.name,
-        category.color
+        current_org.user_id
     )
     .fetch_one(&pool)
     .await?;
@@ -341,7 +341,7 @@ pub async fn create_transaction(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'finance.create_transaction', 'transaction', $3, json_build_object('type', $4, 'amount', $5, 'desc', $6))
+        VALUES ($1, $2, 'finance.create_transaction', 'transaction', $3, json_build_object('type', $4::text, 'amount', $5::bigint, 'desc', $6::text))
         "#,
         current_org.organization_id,
         current_org.user_id,
@@ -400,7 +400,7 @@ pub async fn void_transaction(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'finance.void_transaction', 'transaction', $3, json_build_object('reason', $4))
+        VALUES ($1, $2, 'finance.void_transaction', 'transaction', $3, json_build_object('reason', $4::text))
         "#,
         current_org.organization_id,
         current_org.user_id,

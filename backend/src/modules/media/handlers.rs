@@ -8,7 +8,7 @@ use uuid::Uuid;
 use crate::error::AppError;
 use crate::extractors::CurrentOrganization;
 use crate::modules::organization::permissions::PermissionService;
-use super::dto::{ApprovePostRequest, CreatePostRequest, PostResponse, UpdatePostRequest};
+use super::dto::{ApprovePostRequest, CreatePostRequest, PostResponse};
 
 #[derive(Debug, Deserialize)]
 pub struct PostFilterQuery {
@@ -134,7 +134,7 @@ pub async fn create_post(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'media.create_post', 'content_post', $3, json_build_object('title', $4, 'status', $5))
+        VALUES ($1, $2, 'media.create_post', 'content_post', $3, json_build_object('title', $4::text, 'status', $5::text))
         "#,
         current_org.organization_id,
         current_org.user_id,
@@ -197,7 +197,7 @@ pub async fn approve_post(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'media.approve_post', 'content_post', $3, json_build_object('approved', $4))
+        VALUES ($1, $2, 'media.approve_post', 'content_post', $3, json_build_object('approved', $4::boolean))
         "#,
         current_org.organization_id,
         current_org.user_id,

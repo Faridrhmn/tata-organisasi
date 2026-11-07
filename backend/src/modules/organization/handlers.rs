@@ -356,7 +356,7 @@ pub async fn invite_member(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'members.invite', 'member', $3, json_build_object('role', $4, 'email', $5))
+        VALUES ($1, $2, 'members.invite', 'member', $3, json_build_object('role', $4::text, 'email', $5::text))
         "#,
         org_id,
         current_org.user_id,

@@ -41,7 +41,7 @@ pub async fn generate_poster(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'poster.generate', 'poster', $3, json_build_object('title', $4, 'ratio', $5, 'status_type', $6))
+        VALUES ($1, $2, 'poster.generate', 'poster', $3, json_build_object('title', $4::text, 'ratio', $5::text, 'status_type', $6::text))
         "#,
         current_org.organization_id,
         current_org.user_id,

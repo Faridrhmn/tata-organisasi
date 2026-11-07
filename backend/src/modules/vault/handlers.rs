@@ -12,7 +12,6 @@ use crate::modules::organization::permissions::PermissionService;
 use super::crypto::VaultCrypto;
 use super::dto::{
     CreateCredentialRequest, CredentialListItem, RevealPasswordRequest, RevealPasswordResponse,
-    UpdateCredentialRequest,
 };
 
 /// Handler: GET /api/v1/vault/credentials (List All Credentials in Masked Mode)
@@ -107,7 +106,7 @@ pub async fn create_credential(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'vault.create', 'vault_credential', $3, json_build_object('platform', $4, 'label', $5))
+        VALUES ($1, $2, 'vault.create', 'vault_credential', $3, json_build_object('platform', $4::text, 'label', $5::text))
         "#,
         current_org.organization_id,
         current_org.user_id,
@@ -193,7 +192,7 @@ pub async fn reveal_credential(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'vault.reveal_success', 'vault_credential', $3, json_build_object('platform', $4, 'username', $5))
+        VALUES ($1, $2, 'vault.reveal_success', 'vault_credential', $3, json_build_object('platform', $4::text, 'username', $5::text))
         "#,
         current_org.organization_id,
         current_org.user_id,
@@ -232,7 +231,7 @@ pub async fn delete_credential(
     let _ = sqlx::query!(
         r#"
         INSERT INTO audit_logs (organization_id, user_id, action, target_type, target_id, details)
-        VALUES ($1, $2, 'vault.delete', 'vault_credential', $3, json_build_object('platform', $4, 'label', $5))
+        VALUES ($1, $2, 'vault.delete', 'vault_credential', $3, json_build_object('platform', $4::text, 'label', $5::text))
         "#,
         current_org.organization_id,
         current_org.user_id,
