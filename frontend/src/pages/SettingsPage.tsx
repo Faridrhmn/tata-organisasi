@@ -98,20 +98,20 @@ CREATE SCHEMA IF NOT EXISTS org_data;
       ],
     },
     {
-      module: 'Account Vault (Kredensial)',
+      module: 'Kumpulan Akun (Vault)',
       icon: KeyRound,
       permissions: [
         { name: 'Melihat Daftar Akun Medsos', roles: ['owner', 'ketua', 'admin_media'] },
-        { name: 'Reveal & Salin Password (Re-auth)', roles: ['owner', 'ketua', 'admin_media'] },
+        { name: 'Buka & Salin Kata Sandi (Re-autentikasi)', roles: ['owner', 'ketua', 'admin_media'] },
         { name: 'Tambah & Ubah Kredensial Baru', roles: ['owner', 'admin_media'] },
       ],
     },
     {
-      module: 'Dynamic Poster Studio',
+      module: 'Studio Desain Poster',
       icon: Sparkles,
       permissions: [
         { name: 'Generate Poster Live SVG & PNG', roles: ['owner', 'ketua', 'sekretaris', 'admin_media'] },
-        { name: 'Jadwalkan Poster ke Content Planner', roles: ['owner', 'admin_media'] },
+        { name: 'Jadwalkan Poster ke Kalender Konten', roles: ['owner', 'admin_media'] },
       ],
     },
     {
@@ -119,8 +119,8 @@ CREATE SCHEMA IF NOT EXISTS org_data;
       icon: CalendarDays,
       permissions: [
         { name: 'Melihat Kalender Publikasi', roles: ['owner', 'ketua', 'sekretaris', 'admin_media'] },
-        { name: 'Membuat Draft Konten & Caption', roles: ['owner', 'sekretaris', 'admin_media'] },
-        { name: 'Persetujuan Publikasi (Approval)', roles: ['owner', 'ketua'] },
+        { name: 'Membuat Draf Konten & Teks', roles: ['owner', 'sekretaris', 'admin_media'] },
+        { name: 'Persetujuan Publikasi Konten', roles: ['owner', 'ketua'] },
       ],
     },
     {
@@ -150,25 +150,22 @@ CREATE SCHEMA IF NOT EXISTS org_data;
         <div className="flex bg-slate-200/80 p-0.5 rounded-lg text-xs">
           <button
             onClick={() => setActiveTab('org')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all ${
-              activeTab === 'org' ? 'bg-white text-gitlab-text shadow-xs font-bold' : 'text-gitlab-secondary hover:text-gitlab-text'
-            }`}
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all ${activeTab === 'org' ? 'bg-white text-gitlab-text shadow-xs font-bold' : 'text-gitlab-secondary hover:text-gitlab-text'
+              }`}
           >
             Profil Organisasi
           </button>
           <button
             onClick={() => setActiveTab('rbac')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all ${
-              activeTab === 'rbac' ? 'bg-white text-gitlab-text shadow-xs font-bold' : 'text-gitlab-secondary hover:text-gitlab-text'
-            }`}
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all ${activeTab === 'rbac' ? 'bg-white text-gitlab-text shadow-xs font-bold' : 'text-gitlab-secondary hover:text-gitlab-text'
+              }`}
           >
             Matriks Hak Akses (RBAC)
           </button>
           <button
             onClick={() => setActiveTab('system')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all ${
-              activeTab === 'system' ? 'bg-white text-gitlab-text shadow-xs font-bold' : 'text-gitlab-secondary hover:text-gitlab-text'
-            }`}
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all ${activeTab === 'system' ? 'bg-white text-gitlab-text shadow-xs font-bold' : 'text-gitlab-secondary hover:text-gitlab-text'
+              }`}
           >
             Status Server & DB (Superadmin)
           </button>
@@ -459,8 +456,8 @@ CREATE SCHEMA IF NOT EXISTS org_data;
       {backupModalOpen &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div className="bg-white rounded-xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="bg-white rounded-lg max-w-md w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
                     <Database size={16} />

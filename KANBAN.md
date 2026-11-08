@@ -57,7 +57,7 @@ Agar hasil coding AI tidak melenceng:
   - Handlers & Router: `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me`.
   - Audit logging otomatis untuk aksi login dan registrasi.
 - [x] **[UI-02] Halaman Auth & Onboarding Flow (React)**
-  - Halaman Login & Registrasi (`AuthPage.tsx`) dengan dark theme elegan.
+  - Halaman Login & Registrasi (`AuthPage.tsx`) mengadopsi standar GitLab Light visual modern.
   - Tombol Superadmin 1-Klik (`⚡ Masuk Cepat sebagai Superadmin`).
   - Penyimpanan JWT ke localStorage dan sinkronisasi session user.
   - Navigasi modular & profil pengguna aktif di Topbar dengan tombol Logout.

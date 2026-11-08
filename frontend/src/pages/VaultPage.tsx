@@ -184,7 +184,7 @@ export const VaultPage: React.FC = () => {
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
             <KeyRound className="text-amber-500" size={24} />
-            Account Vault (Kredensial Digital)
+            Kumpulan Akun (Vault Kredensial)
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Penyimpanan aman kata sandi akun Instagram, Facebook, Canva, dan hosting dengan enkripsi AES-256-GCM.
@@ -209,7 +209,7 @@ export const VaultPage: React.FC = () => {
           <div>
             <div className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
               <ShieldCheck size={14} className="text-amber-700" />
-              Zero-Trust Credential Security Active
+              Keamanan Kumpulan Kredensial Aktif
             </div>
             <p className="text-[11px] text-slate-600 mt-0.5 max-w-xl">
               Kata sandi dienkripsi dengan standar AES-256-GCM. Kunci master tersimpan aman di server Linux. Membuka kredensial memerlukan re-autentikasi dan tercatat permanen di Audit Trail.
@@ -222,7 +222,7 @@ export const VaultPage: React.FC = () => {
             AES-256-GCM
           </span>
           <span className="px-2 py-0.5 rounded bg-white border border-amber-200 text-[10px] font-mono font-semibold text-emerald-700">
-            Audit Active
+            Audit Aktif
           </span>
         </div>
       </div>
@@ -233,11 +233,10 @@ export const VaultPage: React.FC = () => {
           <button
             key={plat}
             onClick={() => setFilterPlatform(plat)}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${
-              filterPlatform.toLowerCase() === plat.toLowerCase()
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${filterPlatform.toLowerCase() === plat.toLowerCase()
                 ? 'bg-gitlab-sidebarActive text-gitlab-text shadow-xs'
                 : 'bg-white text-gitlab-secondary hover:text-gitlab-text hover:bg-slate-100 border border-gitlab-panelBorder'
-            }`}
+              }`}
           >
             {plat === 'all' ? 'Semua Platform' : plat}
           </button>
@@ -314,11 +313,10 @@ export const VaultPage: React.FC = () => {
 
                       <button
                         onClick={() => handleCopyPassword(cred)}
-                        className={`p-1 rounded transition-colors ${
-                          isCopied
+                        className={`p-1 rounded transition-colors ${isCopied
                             ? 'text-emerald-600 bg-emerald-50'
                             : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60'
-                        }`}
+                          }`}
                         title="Salin Password ke Clipboard"
                       >
                         {isCopied ? <Check size={15} /> : <Copy size={15} />}
@@ -347,6 +345,16 @@ export const VaultPage: React.FC = () => {
             </div>
           );
         })}
+
+        {filteredCredentials.length === 0 && (
+          <div className="col-span-full py-12 px-4 text-center bg-white rounded-lg border border-gitlab-panelBorder">
+            <KeyRound size={32} className="mx-auto text-slate-300 mb-2" />
+            <p className="text-xs font-semibold text-gitlab-text">Tidak ada kredensial ditemukan</p>
+            <p className="text-[11px] text-gitlab-secondary mt-0.5">
+              Belum ada akun tersimpan untuk filter platform "{filterPlatform === 'all' ? 'Semua Platform' : filterPlatform}".
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Modal: Re-Authentication Security Gate */}
@@ -354,8 +362,8 @@ export const VaultPage: React.FC = () => {
         selectedCred &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="bg-white rounded-lg max-w-sm w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-3.5 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <h3 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
                   <Lock size={15} className="text-amber-500" />
                   Verifikasi Keamanan Akses
@@ -422,8 +430,8 @@ export const VaultPage: React.FC = () => {
       {showAddModal &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="bg-white rounded-lg max-w-md w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-3.5 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
                   <KeyRound size={16} className="text-amber-500" />
                   Simpan Kredensial Akun Baru

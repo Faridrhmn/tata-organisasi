@@ -99,7 +99,7 @@ export function App() {
       )}
 
       {currentModule !== 'dashboard' && currentModule !== 'finance' && currentModule !== 'vault' && currentModule !== 'poster' && currentModule !== 'planner' && currentModule !== 'audit' && currentModule !== 'members' && currentModule !== 'settings' && (
-        <div className="bg-white rounded-xl p-12 text-center border border-slate-200">
+        <div className="bg-white rounded-lg p-12 text-center border border-gitlab-panelBorder shadow-gitlab">
           <div className="text-3xl mb-3">🚧</div>
           <h2 className="text-lg font-bold text-slate-800 capitalize mb-1">
             Modul {currentModule}

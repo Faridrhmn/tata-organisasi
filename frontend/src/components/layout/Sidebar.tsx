@@ -37,13 +37,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const navItems = [
-    { id: 'dashboard', label: 'Home', icon: Home },
+    { id: 'dashboard', label: 'Beranda', icon: Home },
     { id: 'finance', label: 'Buku Kas & Keuangan', icon: Wallet },
-    { id: 'vault', label: 'Account Vault', icon: KeyRound, badge: 7 },
-    { id: 'poster', label: 'Dynamic Poster', icon: ImageIcon },
+    { id: 'vault', label: 'Kumpulan Akun (Vault)', icon: KeyRound, badge: 7 },
+    { id: 'poster', label: 'Studio Desain Poster', icon: ImageIcon },
     { id: 'planner', label: 'Jadwal Konten', icon: CalendarDays, badge: 2 },
     { id: 'members', label: 'Pengurus & Anggota', icon: Users },
-    { id: 'audit', label: 'Audit Trail', icon: ShieldCheck },
+    { id: 'audit', label: 'Log Audit Keamanan', icon: ShieldCheck },
     { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
@@ -61,12 +61,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className={`bg-gitlab-sidebar text-gitlab-text flex flex-col border-r border-gitlab-border select-none transition-all duration-200 z-50 ${
           /* Desktop Width */
           collapsed ? 'lg:w-14' : 'lg:w-60'
-        } ${
+          } ${
           /* Mobile Drawer */
           isMobileOpen
             ? 'fixed inset-y-0 left-0 w-64 shadow-2xl flex'
             : 'hidden lg:flex'
-        }`}
+          }`}
       >
         {/* Sidebar Header: "Your work" section like GitLab */}
         <div className="h-12 px-3.5 flex items-center justify-between border-b border-gitlab-border/80">
@@ -106,19 +106,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onSelectModule(item.id);
                   if (onMobileClose) onMobileClose();
                 }}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
-                  isActive
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${isActive
                     ? 'bg-gitlab-sidebarActive text-gitlab-text font-bold shadow-xs'
                     : 'text-gitlab-secondary hover:bg-gitlab-sidebarHover hover:text-gitlab-text font-medium'
-                } ${collapsed && !isMobileOpen ? 'justify-center px-0' : ''}`}
+                  } ${collapsed && !isMobileOpen ? 'justify-center px-0' : ''}`}
                 title={collapsed && !isMobileOpen ? item.label : undefined}
               >
                 <div className="flex items-center gap-2.5 truncate">
                   <Icon
                     size={16}
-                    className={`shrink-0 ${
-                      isActive ? 'text-gitlab-text' : 'text-gitlab-secondary'
-                    }`}
+                    className={`shrink-0 ${isActive ? 'text-gitlab-text' : 'text-gitlab-secondary'
+                      }`}
                   />
                   {(!collapsed || isMobileOpen) && (
                     <span className="truncate">{item.label}</span>
@@ -128,11 +126,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {/* Subtle Counter Badge (like Image 1 GitLab) */}
                 {(!collapsed || isMobileOpen) && item.badge && (
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
-                      isActive
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${isActive
                         ? 'bg-slate-300 text-slate-800'
                         : 'bg-slate-200/90 text-slate-600'
-                    }`}
+                      }`}
                   >
                     {item.badge}
                   </span>
@@ -146,9 +143,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-2 border-t border-gitlab-border/80 space-y-0.5 text-xs text-gitlab-secondary">
           <button
             onClick={() => setShowHelpModal(true)}
-            className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${
-              collapsed && !isMobileOpen ? 'justify-center px-0' : ''
-            }`}
+            className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${collapsed && !isMobileOpen ? 'justify-center px-0' : ''
+              }`}
             title="Bantuan & Panduan Cepat"
           >
             <HelpCircle size={16} className="shrink-0" />
@@ -157,17 +153,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <button
             onClick={onToggleCollapse}
-            className={`w-full hidden lg:flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${
-              collapsed ? 'justify-center px-0' : ''
-            }`}
-            title={collapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
+            className={`w-full hidden lg:flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${collapsed ? 'justify-center px-0' : ''
+              }`}
+            title={collapsed ? 'Perluas menu bilah samping' : 'Ciutkan menu bilah samping'}
           >
             {collapsed ? (
               <ChevronRight size={16} className="shrink-0" />
             ) : (
               <>
                 <ChevronLeft size={16} className="shrink-0" />
-                <span>Ciutkan sidebar</span>
+                <span>Ciutkan menu</span>
               </>
             )}
           </button>
@@ -178,8 +173,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {showHelpModal &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div className="bg-white rounded-xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="bg-white rounded-lg max-w-lg w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                     <BookOpen size={18} />
@@ -246,7 +241,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         Account Vault Medsos
                       </div>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        Brankas kata sandi bersama terenkripsi AES-256-GCM dengan gerbang re-otentikasi & audit trail otomatis.
+                        Kumpulan kata sandi bersama terenkripsi AES-256-GCM dengan gerbang re-otentikasi & audit trail otomatis.
                       </p>
                     </div>
 

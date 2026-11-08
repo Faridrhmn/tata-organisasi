@@ -129,7 +129,7 @@ export const MembersPage: React.FC = () => {
       case 'owner':
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1">
-            <Crown size={11} className="text-amber-600" /> Owner
+            <Crown size={11} className="text-amber-600" /> Pemilik
           </span>
         );
       case 'ketua':
@@ -230,7 +230,7 @@ export const MembersPage: React.FC = () => {
         <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
           {[
             { id: 'all', label: 'Semua' },
-            { id: 'owner', label: 'Owner' },
+            { id: 'owner', label: 'Pemilik' },
             { id: 'ketua', label: 'Ketua' },
             { id: 'bendahara', label: 'Bendahara' },
             { id: 'admin_media', label: 'Admin Media' },
@@ -259,7 +259,7 @@ export const MembersPage: React.FC = () => {
               <tr className="bg-slate-50/80 border-b border-gitlab-panelBorder text-[11px] font-semibold text-gitlab-secondary uppercase tracking-wider">
                 <th className="py-2.5 px-4">Nama Pengurus</th>
                 <th className="py-2.5 px-4">Email Kontak</th>
-                <th className="py-2.5 px-4">Role RBAC</th>
+                <th className="py-2.5 px-4">Peran (Role)</th>
                 <th className="py-2.5 px-4">Status Akun</th>
                 <th className="py-2.5 px-4">Bergabung</th>
                 <th className="py-2.5 px-4 text-center">Aksi</th>

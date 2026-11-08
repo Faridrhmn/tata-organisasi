@@ -497,36 +497,48 @@ export const FinancePage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
-              {filteredTransactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-3 px-4 font-mono text-slate-600 whitespace-nowrap">
-                    {tx.transaction_date}
-                  </td>
-                  <td className="py-3 px-4 font-medium text-slate-800 max-w-xs truncate">
-                    {tx.description}
-                  </td>
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                      {tx.category_name}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
-                    {tx.account_name}
-                  </td>
-                  <td
-                    className={`py-3 px-4 text-right font-bold whitespace-nowrap ${
-                      tx.type === 'income' ? 'text-emerald-600' : 'text-slate-800'
-                    }`}
-                  >
-                    {tx.type === 'income' ? '+' : '-'} {formatRupiah(tx.amount)}
-                  </td>
-                  <td className="py-3 px-4 text-center whitespace-nowrap">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      Tercatat
-                    </span>
+              {filteredTransactions.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center text-slate-500">
+                    <Wallet size={32} className="mx-auto text-slate-300 mb-2" />
+                    <p className="text-xs font-semibold text-gitlab-text">Tidak ada transaksi ditemukan</p>
+                    <p className="text-[11px] text-gitlab-secondary mt-0.5">
+                      Belum ada catatan transaksi untuk filter "{filterType === 'all' ? 'Semua' : filterType === 'income' ? 'Pemasukan' : 'Pengeluaran'}".
+                    </p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredTransactions.map((tx) => (
+                  <tr key={tx.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3 px-4 font-mono text-slate-600 whitespace-nowrap">
+                      {tx.transaction_date}
+                    </td>
+                    <td className="py-3 px-4 font-medium text-slate-800 max-w-xs truncate">
+                      {tx.description}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                        {tx.category_name}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
+                      {tx.account_name}
+                    </td>
+                    <td
+                      className={`py-3 px-4 text-right font-bold whitespace-nowrap ${
+                        tx.type === 'income' ? 'text-emerald-600' : 'text-slate-800'
+                      }`}
+                    >
+                      {tx.type === 'income' ? '+' : '-'} {formatRupiah(tx.amount)}
+                    </td>
+                    <td className="py-3 px-4 text-center whitespace-nowrap">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Tercatat
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -536,8 +548,8 @@ export const FinancePage: React.FC = () => {
       {showAddModal &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="bg-white rounded-lg max-w-md w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
                   <FileText size={16} className="text-emerald-600" />
                   Catat Transaksi Kas Baru
@@ -703,8 +715,8 @@ export const FinancePage: React.FC = () => {
       {showExportModal &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div className="bg-white rounded-xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="bg-white rounded-lg max-w-lg w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
                     <Download size={18} />

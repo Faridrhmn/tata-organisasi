@@ -336,10 +336,10 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
         <div>
           <h1 className="text-xl font-bold text-gitlab-text tracking-tight flex items-center gap-2">
             <CalendarDays className="text-tari-green" size={22} />
-            Perencanaan Kalender Konten (Content Planner)
+            Perencanaan Kalender Konten
           </h1>
           <p className="text-xs text-gitlab-secondary mt-0.5">
-            Susun strategi dan jadwal publikasi multi-kanal ke Instagram, Facebook, dan WhatsApp dengan approval Ketua.
+            Susun strategi dan jadwal publikasi multi-kanal ke Instagram, Facebook, dan WhatsApp dengan persetujuan Ketua.
           </p>
         </div>
 
@@ -353,10 +353,10 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                   ? 'bg-white text-gitlab-text shadow-xs font-bold'
                   : 'text-gitlab-secondary hover:text-gitlab-text'
               }`}
-              title="Tampilan Pipeline Alur Kerja"
+              title="Tampilan Papan Alur Kerja"
             >
               <Kanban size={13} />
-              <span className="hidden sm:inline">Pipeline Board</span>
+              <span className="hidden sm:inline">Papan Alur (Board)</span>
             </button>
 
             <button
@@ -449,7 +449,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
           <div className="bg-[#f0f0f2]/70 rounded-lg p-3 border border-gitlab-border">
             <div className="flex items-center justify-between mb-2.5 px-1">
               <span className="text-xs font-bold text-gitlab-secondary uppercase tracking-wider flex items-center gap-1.5">
-                Draft
+                Draf Konten
                 <span className="text-[10px] bg-slate-200/90 text-slate-700 px-1.5 py-0.2 rounded-full font-semibold">
                   {filterByStatus('draft').length}
                 </span>
@@ -491,7 +491,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
               ))}
               {filterByStatus('draft').length === 0 && (
                 <div className="p-4 text-center text-xs text-slate-400 border border-dashed border-slate-200 rounded">
-                  Tidak ada draft konten.
+                  Tidak ada draf konten.
                 </div>
               )}
             </div>
@@ -501,7 +501,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
           <div className="bg-[#f0f0f2]/70 rounded-lg p-3 border border-gitlab-border">
             <div className="flex items-center justify-between mb-2.5 px-1">
               <span className="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
-                Menunggu Review
+                Menunggu Persetujuan
                 <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded-full font-semibold">
                   {filterByStatus('pending_approval').length}
                 </span>
@@ -539,7 +539,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                   <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
                     <span>Oleh {post.created_by_name}</span>
                     <span className="text-amber-700 font-bold text-[10px] bg-amber-50 px-1.5 py-0.5 rounded">
-                      Perlu Approval
+                      Perlu Persetujuan
                     </span>
                   </div>
                 </div>
@@ -556,7 +556,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
           <div className="bg-[#f0f0f2]/70 rounded-lg p-3 border border-gitlab-border">
             <div className="flex items-center justify-between mb-2.5 px-1">
               <span className="text-xs font-bold text-blue-800 uppercase tracking-wider flex items-center gap-1.5">
-                Siap / Terjadwal
+                Disetujui / Terjadwal
                 <span className="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded-full font-semibold">
                   {filterByStatus('approved').length}
                 </span>
@@ -957,7 +957,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
 
                   <div>
                     <label className="block font-semibold text-slate-700 mb-1">
-                      Program / Campaign
+                      Program / Kampanye
                     </label>
                     <input
                       type="text"
@@ -973,7 +973,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="font-semibold text-slate-700">
-                      Teks Caption Publikasi
+                      Teks Caption / Deskripsi
                     </label>
                     <div className="flex items-center gap-2 text-[10px] text-slate-400 font-mono">
                       <span>{newCaption.length} karakter</span>
@@ -1017,7 +1017,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                       <Sparkles size={13} className="text-purple-600" />
-                      Live Feed Preview
+                      Pratinjau Tampilan Medsos
                     </span>
 
                     {/* Preview Switcher */}
@@ -1160,7 +1160,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
           <div className="bg-white rounded-lg max-w-lg w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             <div className="p-3.5 sm:px-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-gitlab-text">Detail & Approval Konten</span>
+                <span className="text-xs font-bold text-gitlab-text">Detail & Persetujuan Konten</span>
                 {getStatusBadge(selectedPost.status)}
               </div>
               <button
@@ -1196,7 +1196,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
               {/* Caption View */}
               <div>
                 <label className="block text-[11px] font-bold text-gitlab-secondary uppercase tracking-wider mb-1">
-                  Draft Caption
+                  Draf Teks (Caption)
                 </label>
                 <div className="p-3 bg-slate-50 rounded-md border border-gitlab-panelBorder text-slate-800 whitespace-pre-wrap font-sans text-xs max-h-48 overflow-y-auto leading-relaxed">
                   {selectedPost.caption}
@@ -1232,7 +1232,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                         onClick={() => handleRejectOrRevisePost(selectedPost.id)}
                         className="px-3 py-1.5 border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-md font-semibold"
                       >
-                        Minta Revisi (Draft)
+                        Minta Revisi (Draf)
                       </button>
                       <button
                         onClick={() => handleApprovePost(selectedPost.id)}
@@ -1248,7 +1248,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                       onClick={() => handleRejectOrRevisePost(selectedPost.id)}
                       className="px-3 py-1.5 border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-md font-semibold"
                     >
-                      Batal Setuju (Draft)
+                      Kembalikan ke Draf
                     </button>
                   )}
 

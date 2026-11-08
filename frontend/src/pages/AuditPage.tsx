@@ -106,7 +106,7 @@ export const AuditPage: React.FC = () => {
       }
       return (
         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
-          <KeyRound size={11} /> Account Vault
+          <KeyRound size={11} /> Kumpulan Akun (Vault)
         </span>
       );
     }
@@ -153,17 +153,17 @@ export const AuditPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-1.5">
             <CheckCircle2 size={14} className="text-emerald-600" />
-            Integrity Guard Active
+            Integritas Data Terlindungi
           </span>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="bg-white rounded-lg border border-gitlab-panelBorder p-3.5 sm:px-4 shadow-gitlab flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Filter size={15} className="text-slate-400" />
+          <Filter size={14} className="text-gitlab-muted" />
           <span className="text-xs font-semibold text-slate-700">Filter Modul:</span>
-          <div className="flex flex-wrap gap-1 bg-slate-100 p-0.5 rounded-lg text-xs">
+          <div className="flex flex-wrap gap-1 bg-slate-100 p-0.5 rounded-md text-xs">
             {[
               { id: 'all', label: 'Semua Aktivitas' },
               { id: 'vault', label: 'Vault (Password)' },
@@ -174,11 +174,10 @@ export const AuditPage: React.FC = () => {
               <button
                 key={f.id}
                 onClick={() => setFilterModule(f.id)}
-                className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                  filterModule === f.id
-                    ? 'bg-white text-slate-900 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+                className={`px-2.5 py-1 rounded font-medium transition-all cursor-pointer ${filterModule === f.id
+                    ? 'bg-white text-gitlab-text shadow-xs font-bold'
+                    : 'text-gitlab-secondary hover:text-gitlab-text'
+                  }`}
               >
                 {f.label}
               </button>
@@ -186,56 +185,67 @@ export const AuditPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-xs text-slate-400">
+        <div className="text-xs text-gitlab-muted">
           Menampilkan <span className="font-semibold text-slate-700">{filteredLogs.length}</span> catatan peristiwa
         </div>
       </div>
 
       {/* Audit Log Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-lg border border-gitlab-panelBorder shadow-gitlab overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                <th className="py-3 px-4">Waktu</th>
-                <th className="py-3 px-4">Aktor / Pengguna</th>
-                <th className="py-3 px-4">Modul / Aksi</th>
-                <th className="py-3 px-4">Rincian Peristiwa</th>
-                <th className="py-3 px-4 text-right">IP Address</th>
+              <tr className="bg-slate-50/80 border-b border-gitlab-panelBorder text-[11px] font-semibold text-gitlab-secondary uppercase tracking-wider">
+                <th className="py-2.5 px-4">Waktu</th>
+                <th className="py-2.5 px-4">Aktor / Pengguna</th>
+                <th className="py-2.5 px-4">Modul / Aksi</th>
+                <th className="py-2.5 px-4">Rincian Peristiwa</th>
+                <th className="py-2.5 px-4 text-right">IP Address</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
-              {filteredLogs.map((log) => (
-                <tr
-                  key={log.id}
-                  className={`hover:bg-slate-50/80 transition-colors ${
-                    log.severity === 'warning' ? 'bg-rose-50/30' : ''
-                  }`}
-                >
-                  <td className="py-3.5 px-4 font-mono text-slate-500 whitespace-nowrap">
-                    {log.created_at}
-                  </td>
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <div className="font-semibold text-slate-800">{log.user_name}</div>
-                    <div className="text-[11px] text-slate-400">{log.user_email}</div>
-                  </td>
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    {getActionBadge(log.action, log.severity)}
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-700 max-w-md">
-                    <div className="font-medium line-clamp-2">{log.details}</div>
-                  </td>
-                  <td className="py-3.5 px-4 text-right font-mono text-[11px] text-slate-400 whitespace-nowrap">
-                    {log.ip_address}
+              {filteredLogs.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-slate-500">
+                    <ShieldCheck size={32} className="mx-auto text-slate-300 mb-2" />
+                    <p className="text-xs font-semibold text-gitlab-text">Tidak ada log aktivitas</p>
+                    <p className="text-[11px] text-gitlab-secondary mt-0.5">
+                      Belum ada peristiwa tercatat untuk kategori "{filterModule}".
+                    </p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredLogs.map((log) => (
+                  <tr
+                    key={log.id}
+                    className={`hover:bg-slate-50/80 transition-colors ${log.severity === 'warning' ? 'bg-rose-50/30' : ''
+                      }`}
+                  >
+                    <td className="py-3 px-4 font-mono text-slate-500 whitespace-nowrap">
+                      {log.created_at}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <div className="font-semibold text-slate-800">{log.user_name}</div>
+                      <div className="text-[11px] text-slate-400">{log.user_email}</div>
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {getActionBadge(log.action, log.severity)}
+                    </td>
+                    <td className="py-3 px-4 text-slate-700 max-w-md">
+                      <div className="font-medium line-clamp-2">{log.details}</div>
+                    </td>
+                    <td className="py-3 px-4 text-right font-mono text-[11px] text-slate-400 whitespace-nowrap">
+                      {log.ip_address}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
         {/* Footer Guarantee */}
-        <div className="p-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-400 flex items-center justify-between">
+        <div className="p-3 bg-slate-50/60 border-t border-gitlab-panelBorder text-[11px] text-gitlab-muted flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Info size={13} className="text-slate-400" />
             <span>Setiap modifikasi data keuangan dan akses kredensial vault terekam permanen untuk kepatuhan transparansi.</span>

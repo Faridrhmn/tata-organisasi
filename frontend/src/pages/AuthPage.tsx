@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Mail, User, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Lock, Mail, User, ArrowRight, ShieldCheck, Zap, CheckCircle2 } from 'lucide-react';
 
 interface AuthPageProps {
   onLoginSuccess: (user: any, token: string) => void;
@@ -70,58 +70,75 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-4 selection:bg-emerald-500 selection:text-white">
-      {/* Background radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-emerald-950/40 via-slate-950 to-slate-950 -z-10 pointer-events-none"></div>
-
+    <div className="min-h-screen bg-gitlab-bg flex flex-col justify-center items-center p-4 sm:p-6 selection:bg-blue-100 selection:text-blue-900 font-sans text-gitlab-text">
+      {/* Container max-w-md */}
       <div className="w-full max-w-md">
-        {/* Brand Header */}
+        {/* Brand Header - GitLab Style */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-lg shadow-emerald-900/40">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-tari-green text-white font-extrabold text-2xl shadow-xs mb-3 ring-4 ring-emerald-50">
             T
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            TARI <span className="text-slate-400 font-normal">| Tata Organisasi</span>
+          <h1 className="text-2xl font-bold tracking-tight text-gitlab-text flex items-center justify-center gap-2">
+            <span>TARI</span>
+            <span className="text-sm font-normal text-gitlab-secondary">| Tata Organisasi</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Platform SaaS Multi-Tenant Operasional Organisasi
+          <p className="text-xs text-gitlab-secondary mt-1">
+            Platform Tata Kelola Operasional & Finansial Multi-Tenant
           </p>
         </div>
 
-        {/* 1-Click Superadmin Button (Featured at the top) */}
-        <div className="mb-4">
-          <button
-            type="button"
-            onClick={handleQuickSuperadmin}
-            className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/40 flex items-center justify-center gap-2 border border-emerald-400/30 transition-all hover:scale-[1.01]"
-          >
-            <Zap size={16} className="text-amber-300 animate-pulse fill-amber-300" />
-            <span>⚡ Masuk Cepat sebagai Superadmin (1-Klik)</span>
-          </button>
-        </div>
+        {/* 1-Click Superadmin Action Card */}
+        <button
+          type="button"
+          onClick={handleQuickSuperadmin}
+          className="w-full mb-4 p-3.5 bg-emerald-50/80 hover:bg-emerald-100/80 border border-emerald-300/80 rounded-lg text-left transition-all duration-150 shadow-xs group flex items-start gap-3 cursor-pointer"
+        >
+          <div className="p-2 bg-emerald-600 text-white rounded-md shrink-0 shadow-xs mt-0.5">
+            <Zap size={16} className="fill-amber-300 text-amber-300" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-950 group-hover:text-emerald-900">
+                ⚡ Masuk Cepat sebagai Superadmin (1-Klik)
+              </span>
+              <span className="text-[10px] bg-emerald-200/70 text-emerald-800 font-semibold px-1.5 py-0.5 rounded">
+                Bypass
+              </span>
+            </div>
+            <p className="text-[11px] text-emerald-800/90 mt-0.5 leading-relaxed">
+              Langsung masuk ke dashboard organisasi dengan hak akses penuh tanpa input manual.
+            </p>
+          </div>
+        </button>
 
-        {/* Card Form */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
-          {/* Tab Selector */}
-          <div className="flex rounded-lg bg-slate-800/80 p-1 mb-6 border border-slate-700/50">
+        {/* Main GitLab Style Card Form */}
+        <div className="bg-white border border-gitlab-panelBorder rounded-lg p-6 sm:p-7 shadow-gitlab">
+          {/* Segmented Control Tab */}
+          <div className="flex rounded-md bg-slate-100 p-0.5 mb-5 border border-slate-200 text-xs">
             <button
               type="button"
-              onClick={() => { setIsRegister(false); setError(null); }}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              onClick={() => {
+                setIsRegister(false);
+                setError(null);
+              }}
+              className={`flex-1 py-1.5 font-semibold rounded transition-all cursor-pointer ${
                 !isRegister
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-gitlab-text shadow-xs'
+                  : 'text-gitlab-secondary hover:text-gitlab-text'
               }`}
             >
               Masuk (Login)
             </button>
             <button
               type="button"
-              onClick={() => { setIsRegister(true); setError(null); }}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              onClick={() => {
+                setIsRegister(true);
+                setError(null);
+              }}
+              className={`flex-1 py-1.5 font-semibold rounded transition-all cursor-pointer ${
                 isRegister
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-gitlab-text shadow-xs'
+                  : 'text-gitlab-secondary hover:text-gitlab-text'
               }`}
             >
               Daftar Akun Baru
@@ -129,8 +146,8 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
           </div>
 
           {error && (
-            <div className="mb-5 p-3 rounded-lg bg-rose-950/60 border border-rose-800/60 text-rose-300 text-xs flex items-center gap-2">
-              <ShieldCheck size={16} className="text-rose-400 shrink-0" />
+            <div className="mb-4 p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+              <ShieldCheck size={16} className="text-rose-600 shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -138,60 +155,81 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {isRegister && (
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label
+                  htmlFor="fullName"
+                  className="block text-xs font-semibold text-gitlab-text mb-1"
+                >
                   Nama Lengkap
                 </label>
                 <div className="relative">
-                  <User size={15} className="absolute left-3 top-3 text-slate-500" />
+                  <User
+                    size={14}
+                    className="absolute left-3 top-2.5 text-gitlab-secondary"
+                  />
                   <input
+                    id="fullName"
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Contoh: Patrick Maulana"
-                    className="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 placeholder-slate-400 focus:outline-hidden focus:border-gitlab-blue focus:ring-1 focus:ring-gitlab-blue transition-colors"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label
+                htmlFor="email"
+                className="block text-xs font-semibold text-gitlab-text mb-1"
+              >
                 Alamat Email
               </label>
               <div className="relative">
-                <Mail size={15} className="absolute left-3 top-3 text-slate-500" />
+                <Mail
+                  size={14}
+                  className="absolute left-3 top-2.5 text-gitlab-secondary"
+                />
                 <input
+                  id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@organisasi.id"
-                  className="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 placeholder-slate-400 focus:outline-hidden focus:border-gitlab-blue focus:ring-1 focus:ring-gitlab-blue transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-medium text-slate-300">
+              <div className="flex items-center justify-between mb-1">
+                <label
+                  htmlFor="password"
+                  className="text-xs font-semibold text-gitlab-text"
+                >
                   Kata Sandi
                 </label>
                 {!isRegister && (
-                  <span className="text-[11px] text-slate-400">
-                    Default: <code className="text-emerald-400 font-mono">5</code>
+                  <span className="text-[11px] text-gitlab-secondary">
+                    Default demo: <code className="text-emerald-700 font-mono font-bold bg-slate-100 px-1 py-0.5 rounded">5</code>
                   </span>
                 )}
               </div>
               <div className="relative">
-                <Lock size={15} className="absolute left-3 top-3 text-slate-500" />
+                <Lock
+                  size={14}
+                  className="absolute left-3 top-2.5 text-gitlab-secondary"
+                />
                 <input
+                  id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Kata sandi"
-                  className="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                  placeholder="Masukkan kata sandi"
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 placeholder-slate-400 focus:outline-hidden focus:border-gitlab-blue focus:ring-1 focus:ring-gitlab-blue transition-colors"
                 />
               </div>
             </div>
@@ -199,18 +237,36 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onLoginSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30"
+              className="w-full mt-2 py-2 px-4 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-semibold text-xs rounded-md transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
                 <>
-                  <span>{isRegister ? 'Buat Akun TARI' : 'Masuk ke Platform'}</span>
+                  <span>{isRegister ? 'Buat Akun Organisasi' : 'Masuk ke Platform'}</span>
                   <ArrowRight size={14} />
                 </>
               )}
             </button>
           </form>
+
+          {/* Quick Demo Credentials Information */}
+          <div className="mt-5 pt-4 border-t border-slate-100 text-[11px] text-gitlab-secondary">
+            <div className="flex items-center gap-1.5 font-semibold text-gitlab-text mb-1">
+              <CheckCircle2 size={13} className="text-emerald-600" />
+              <span>Kredensial Siap Pakai:</span>
+            </div>
+            <p className="text-slate-600">
+              Email: <span className="font-mono text-slate-800">patrick@tari.org</span> • Password:{' '}
+              <span className="font-mono text-slate-800">5</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Security Footer Notice */}
+        <div className="text-center mt-6 text-[11px] text-gitlab-muted flex items-center justify-center gap-1.5">
+          <ShieldCheck size={13} className="text-slate-400" />
+          <span>Keamanan Sesi Terenkripsi Argon2id & PostgreSQL Multi-Tenant</span>
         </div>
       </div>
     </div>

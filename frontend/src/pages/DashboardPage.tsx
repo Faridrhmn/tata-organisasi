@@ -74,13 +74,13 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Column (Main Panels, 8 span) */}
         <div className="lg:col-span-8 space-y-5">
-          {/* Panel 1: Items that need your attention */}
+          {/* Panel 1: Perlu Tindakan Anda */}
           <div className="bg-white rounded-lg border border-gitlab-panelBorder shadow-gitlab overflow-hidden">
             {/* Panel Header & Tabs (GitLab Style) */}
             <div className="border-b border-gitlab-panelBorder">
               <div className="pt-4 px-4 pb-2">
                 <h2 className="text-sm font-bold text-gitlab-text">
-                  Items that need your attention
+                  Perlu Tindakan Anda
                 </h2>
               </div>
 
@@ -88,24 +88,22 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
               <div className="flex items-center gap-6 px-4 text-xs overflow-x-auto">
                 <button
                   onClick={() => setAttentionTab('all')}
-                  className={`pb-2.5 pt-1 font-semibold flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${
-                    attentionTab === 'all'
+                  className={`pb-2.5 pt-1 font-semibold flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${attentionTab === 'all'
                       ? 'border-gitlab-blue text-gitlab-text font-bold'
                       : 'border-transparent text-gitlab-secondary hover:text-gitlab-text hover:border-slate-300'
-                  }`}
+                    }`}
                 >
-                  All
+                  Semua
                 </button>
 
                 <button
                   onClick={() => setAttentionTab('review')}
-                  className={`pb-2.5 pt-1 font-medium flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${
-                    attentionTab === 'review'
+                  className={`pb-2.5 pt-1 font-medium flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${attentionTab === 'review'
                       ? 'border-gitlab-blue text-gitlab-text font-bold'
                       : 'border-transparent text-gitlab-secondary hover:text-gitlab-text hover:border-slate-300'
-                  }`}
+                    }`}
                 >
-                  <span>Review requested</span>
+                  <span>Menunggu Persetujuan</span>
                   <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full font-semibold">
                     1
                   </span>
@@ -113,11 +111,10 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
 
                 <button
                   onClick={() => setAttentionTab('finance')}
-                  className={`pb-2.5 pt-1 font-medium flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${
-                    attentionTab === 'finance'
+                  className={`pb-2.5 pt-1 font-medium flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${attentionTab === 'finance'
                       ? 'border-gitlab-blue text-gitlab-text font-bold'
                       : 'border-transparent text-gitlab-secondary hover:text-gitlab-text hover:border-slate-300'
-                  }`}
+                    }`}
                 >
                   <span>Keuangan</span>
                   <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full font-semibold">
@@ -127,13 +124,12 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
 
                 <button
                   onClick={() => setAttentionTab('vault')}
-                  className={`pb-2.5 pt-1 font-medium flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${
-                    attentionTab === 'vault'
+                  className={`pb-2.5 pt-1 font-medium flex items-center gap-1.5 transition-colors border-b-2 -mb-px whitespace-nowrap ${attentionTab === 'vault'
                       ? 'border-gitlab-blue text-gitlab-text font-bold'
                       : 'border-transparent text-gitlab-secondary hover:text-gitlab-text hover:border-slate-300'
-                  }`}
+                    }`}
                 >
-                  <span>Vault Medsos</span>
+                  <span>Kumpulan Akun</span>
                   <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full font-semibold">
                     7
                   </span>
@@ -143,51 +139,63 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
 
             {/* Attention List Items */}
             <div className="divide-y divide-slate-100 text-xs">
-              {filteredAttention.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-3.5 sm:px-4 flex items-start justify-between gap-3 hover:bg-slate-50/80 transition-colors"
-                >
-                  <div className="flex items-start gap-2.5">
-                    <div className="mt-0.5 text-slate-500">
-                      {item.type === 'planner' && <CalendarDays size={15} className="text-blue-600" />}
-                      {item.type === 'finance' && <Wallet size={15} className="text-emerald-600" />}
-                      {item.type === 'vault' && <KeyRound size={15} className="text-amber-600" />}
+              {filteredAttention.length === 0 ? (
+                <div className="py-10 px-4 text-center">
+                  <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2 border border-emerald-200">
+                    <Check size={18} />
+                  </div>
+                  <h3 className="text-xs font-semibold text-gitlab-text">Semua tugas beres!</h3>
+                  <p className="text-[11px] text-gitlab-secondary mt-0.5">
+                    Tidak ada item yang membutuhkan tindakan Anda pada kategori ini.
+                  </p>
+                </div>
+              ) : (
+                filteredAttention.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-3.5 sm:px-4 flex items-start justify-between gap-3 hover:bg-slate-50/80 transition-colors"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="mt-0.5 text-slate-500">
+                        {item.type === 'planner' && <CalendarDays size={15} className="text-blue-600" />}
+                        {item.type === 'finance' && <Wallet size={15} className="text-emerald-600" />}
+                        {item.type === 'vault' && <KeyRound size={15} className="text-amber-600" />}
+                      </div>
+
+                      <div>
+                        <button
+                          onClick={() => onSelectModule && onSelectModule(item.type)}
+                          className="text-left font-semibold text-slate-800 hover:text-gitlab-blue transition-colors cursor-pointer"
+                        >
+                          {item.title}
+                        </button>
+                        <p className="text-[11px] text-gitlab-secondary mt-0.5">
+                          {item.subtitle}
+                        </p>
+                      </div>
                     </div>
 
-                    <div>
+                    {/* Actions / Time */}
+                    <div className="flex items-center gap-2 shrink-0 text-gitlab-muted text-[11px]">
+                      <span className="hidden sm:inline">{item.time}</span>
                       <button
                         onClick={() => onSelectModule && onSelectModule(item.type)}
-                        className="text-left font-semibold text-slate-800 hover:text-gitlab-blue transition-colors"
+                        className="p-1 hover:text-slate-800 hover:bg-slate-200/60 rounded cursor-pointer"
+                        title="Buka detail"
                       >
-                        {item.title}
+                        <Clock size={14} />
                       </button>
-                      <p className="text-[11px] text-gitlab-secondary mt-0.5">
-                        {item.subtitle}
-                      </p>
+                      <button
+                        onClick={() => onSelectModule && onSelectModule(item.type)}
+                        className="p-1 hover:text-emerald-600 hover:bg-emerald-50 rounded cursor-pointer"
+                        title="Selesai / Review"
+                      >
+                        <Check size={14} />
+                      </button>
                     </div>
                   </div>
-
-                  {/* Actions / Time */}
-                  <div className="flex items-center gap-2 shrink-0 text-gitlab-muted text-[11px]">
-                    <span className="hidden sm:inline">{item.time}</span>
-                    <button
-                      onClick={() => onSelectModule && onSelectModule(item.type)}
-                      className="p-1 hover:text-slate-800 hover:bg-slate-200/60 rounded"
-                      title="Buka detail"
-                    >
-                      <Clock size={14} />
-                    </button>
-                    <button
-                      onClick={() => onSelectModule && onSelectModule(item.type)}
-                      className="p-1 hover:text-emerald-600 hover:bg-emerald-50 rounded"
-                      title="Selesai / Review"
-                    >
-                      <Check size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             {/* Bottom link */}
@@ -201,11 +209,11 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
             </div>
           </div>
 
-          {/* Panel 2: Follow the latest updates (GitLab Activity Feed Style) */}
+          {/* Panel 2: Pembaruan & Aktivitas Terkini (GitLab Activity Feed Style) */}
           <div className="bg-white rounded-lg border border-gitlab-panelBorder shadow-gitlab p-4">
             <div className="flex items-center justify-between pb-3 border-b border-gitlab-panelBorder">
               <h2 className="text-sm font-bold text-gitlab-text">
-                Follow the latest updates
+                Pembaruan & Aktivitas Terkini
               </h2>
               <button className="px-2 py-1 text-xs border border-slate-200 rounded text-slate-600 hover:bg-slate-50 flex items-center gap-1 font-medium">
                 <span>Aktivitas terbaru</span>
@@ -299,7 +307,7 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
               </div>
 
               <div className="text-[10px] text-gitlab-muted pt-1">
-                Updated Nov 07, 2026, 2:45 PM
+                Diperbarui 07 Nov 2026, 14:45 WIB
               </div>
 
               <div className="pt-2 border-t border-slate-100">
@@ -313,31 +321,29 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
             </div>
           </div>
 
-          {/* Widget 2: Quick Access (GitLab Segmented Button Style) */}
+          {/* Widget 2: Akses Cepat (GitLab Segmented Button Style) */}
           <div className="bg-white rounded-lg border border-gitlab-panelBorder shadow-gitlab p-4">
             <h3 className="text-xs font-bold text-gitlab-text uppercase tracking-wider mb-2.5">
-              Quick access
+              Akses Cepat
             </h3>
 
             {/* Segmented Control */}
             <div className="flex rounded-md border border-slate-200 p-0.5 text-xs bg-slate-50 mb-3">
               <button
                 onClick={() => setQuickAccessTab('recent')}
-                className={`flex-1 py-1 rounded font-semibold transition-all ${
-                  quickAccessTab === 'recent'
+                className={`flex-1 py-1 rounded font-semibold transition-all ${quickAccessTab === 'recent'
                     ? 'bg-white text-slate-800 shadow-xs'
                     : 'text-slate-500 hover:text-slate-800'
-                }`}
+                  }`}
               >
-                Recently viewed
+                Baru Dilihat
               </button>
               <button
                 onClick={() => setQuickAccessTab('modules')}
-                className={`flex-1 py-1 rounded font-semibold transition-all ${
-                  quickAccessTab === 'modules'
+                className={`flex-1 py-1 rounded font-semibold transition-all ${quickAccessTab === 'modules'
                     ? 'bg-white text-slate-800 shadow-xs'
                     : 'text-slate-500 hover:text-slate-800'
-                }`}
+                  }`}
               >
                 Modul Utama
               </button>
@@ -385,7 +391,7 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
                   className="w-full text-left flex items-center gap-2 p-2 rounded hover:bg-slate-50 text-slate-700 hover:text-slate-900 transition-colors font-medium"
                 >
                   <KeyRound size={14} className="text-amber-600 shrink-0" />
-                  <span className="truncate">Account Vault (Medsos)</span>
+                  <span className="truncate">Kumpulan Akun (Medsos)</span>
                 </button>
 
                 <button
@@ -393,7 +399,7 @@ export const DashboardPage: React.FC<DashboardProps> = ({ orgName, onSelectModul
                   className="w-full text-left flex items-center gap-2 p-2 rounded hover:bg-slate-50 text-slate-700 hover:text-slate-900 transition-colors font-medium"
                 >
                   <Sparkles size={14} className="text-purple-600 shrink-0" />
-                  <span className="truncate">Dynamic Poster Studio</span>
+                  <span className="truncate">Studio Desain Poster</span>
                 </button>
 
                 <button

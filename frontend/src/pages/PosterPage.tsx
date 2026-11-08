@@ -162,14 +162,14 @@ export const PosterPage: React.FC<PosterPageProps> = ({ onScheduleToPlanner }) =
             className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
           >
             <FileDown size={14} />
-            Download SVG
+            Unduh SVG
           </button>
           <button
             onClick={handleDownloadPng}
             className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
           >
             <Download size={14} />
-            Download High-Res PNG (1080px)
+            Unduh Gambar PNG (1080px)
           </button>
         </div>
       </div>
@@ -375,7 +375,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ onScheduleToPlanner }) =
           </div>
 
           <div
-            className={`w-full max-w-[460px] bg-black rounded-xl overflow-hidden shadow-2xl border border-slate-700/60 transition-all ${
+            className={`w-full max-w-[460px] bg-black rounded-lg overflow-hidden shadow-xl border border-slate-700/60 transition-all ${
               aspectRatio === '9:16' ? 'aspect-[9/16]' : 'aspect-square'
             }`}
           >

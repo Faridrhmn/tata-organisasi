@@ -151,13 +151,13 @@ export const Topbar: React.FC<TopbarProps> = ({
   // Search items catalog
   const searchableItems = [
     // Modules
-    { id: 'm-dash', type: 'Modul', title: 'Home / Dashboard', desc: 'Ringkasan tugas, buku kas, dan aktivitas', module: 'dashboard', icon: Sparkles },
+    { id: 'm-dash', type: 'Modul', title: 'Beranda / Dashboard', desc: 'Ringkasan tugas, buku kas, dan aktivitas', module: 'dashboard', icon: Sparkles },
     { id: 'm-fin', type: 'Modul', title: 'Buku Kas & Keuangan', desc: 'Pencatatan kas multi-rekening dan ekspor laporan', module: 'finance', icon: Wallet },
-    { id: 'm-vault', type: 'Modul', title: 'Account Vault', desc: 'Brankas kata sandi medsos terenkripsi AES-256', module: 'vault', icon: KeyRound },
-    { id: 'm-poster', type: 'Modul', title: 'Studio Dynamic Poster', desc: 'Generator poster kajian otomatis 1:1 dan 9:16', module: 'poster', icon: Sparkles },
-    { id: 'm-plan', type: 'Modul', title: 'Jadwal Konten / Planner', desc: 'Kalender publikasi medsos dan review approval', module: 'planner', icon: CalendarDays },
+    { id: 'm-vault', type: 'Modul', title: 'Kumpulan Akun (Vault)', desc: 'Kumpulan kata sandi medsos terenkripsi AES-256', module: 'vault', icon: KeyRound },
+    { id: 'm-poster', type: 'Modul', title: 'Studio Desain Poster', desc: 'Generator poster kajian otomatis 1:1 dan 9:16', module: 'poster', icon: Sparkles },
+    { id: 'm-plan', type: 'Modul', title: 'Jadwal Konten (Planner)', desc: 'Kalender publikasi medsos dan review approval', module: 'planner', icon: CalendarDays },
     { id: 'm-mem', type: 'Modul', title: 'Pengurus & Anggota', desc: 'Manajemen hak akses role RBAC dan undangan pengurus', module: 'members', icon: Users },
-    { id: 'm-audit', type: 'Modul', title: 'Audit Trail Keamanan', desc: 'Log rekaman aktivitas operasional immutable', module: 'audit', icon: ShieldCheck },
+    { id: 'm-audit', type: 'Modul', title: 'Log Audit Keamanan', desc: 'Log rekaman aktivitas operasional immutable', module: 'audit', icon: ShieldCheck },
     { id: 'm-set', type: 'Modul', title: 'Pengaturan Organisasi', desc: 'Profil masjid, preferensi sistem, dan disaster backup', module: 'settings', icon: Settings },
 
     // Data / Entities
@@ -202,22 +202,41 @@ export const Topbar: React.FC<TopbarProps> = ({
     setSearchOpen(false);
   };
 
+  const getRoleLabel = (role: string) => {
+    switch (role?.toLowerCase()) {
+      case 'owner':
+        return 'Pemilik';
+      case 'ketua':
+        return 'Ketua DKM';
+      case 'bendahara':
+        return 'Bendahara';
+      case 'sekretaris':
+        return 'Sekretaris';
+      case 'admin_media':
+        return 'Admin Media';
+      case 'member':
+        return 'Anggota';
+      default:
+        return role || 'Pengurus';
+    }
+  };
+
   const getModuleTitle = (mod: string) => {
     switch (mod) {
       case 'dashboard':
-        return 'Home';
+        return 'Beranda';
       case 'finance':
         return 'Buku Kas & Keuangan';
       case 'vault':
-        return 'Account Vault';
+        return 'Kumpulan Akun (Vault)';
       case 'poster':
-        return 'Dynamic Poster';
+        return 'Studio Desain Poster';
       case 'planner':
         return 'Jadwal Konten';
       case 'members':
         return 'Pengurus & Anggota';
       case 'audit':
-        return 'Audit Trail';
+        return 'Log Audit Keamanan';
       case 'settings':
         return 'Pengaturan';
       default:
@@ -286,7 +305,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-slate-700">{org.name}</span>
                       <span className="text-[10px] bg-slate-100 text-slate-500 px-1 py-0.2 rounded capitalize">
-                        {org.role}
+                        {getRoleLabel(org.role)}
                       </span>
                     </div>
                     {org.id === currentOrg.id && (
@@ -315,7 +334,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 setUserDropdownOpen(false);
                 setNotifDropdownOpen(false);
               }}
-              placeholder="Search or go to..."
+              placeholder="Cari transaksi, poster, atau buka menu... (Ctrl+K)"
               className="w-full pl-7 pr-12 py-1 text-xs bg-slate-50/80 hover:bg-slate-100 focus:bg-white border border-slate-200 focus:border-slate-300 rounded-md focus:outline-none text-slate-700 placeholder-slate-400 transition-colors shadow-xs"
             />
             {searchQuery ? (
@@ -488,14 +507,12 @@ export const Topbar: React.FC<TopbarProps> = ({
                     <button
                       key={n.id}
                       onClick={() => handleNotificationClick(n)}
-                      className={`w-full text-left p-3 hover:bg-slate-50 transition-colors flex items-start gap-2.5 ${
-                        n.unread ? 'bg-blue-50/30' : ''
-                      }`}
+                      className={`w-full text-left p-3 hover:bg-slate-50 transition-colors flex items-start gap-2.5 ${n.unread ? 'bg-blue-50/30' : ''
+                        }`}
                     >
                       <div
-                        className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
-                          n.unread ? 'bg-blue-600' : 'bg-transparent'
-                        }`}
+                        className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${n.unread ? 'bg-blue-600' : 'bg-transparent'
+                          }`}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-slate-800 truncate">
@@ -546,7 +563,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                     {currentUser?.email || 'patrick@tari.org'}
                   </div>
                   <span className="inline-block mt-1 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 capitalize">
-                    {currentOrg.role}
+                    {getRoleLabel(currentOrg.role)}
                   </span>
                 </div>
 
@@ -556,7 +573,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                       onClick={onLogout}
                       className="w-full text-left px-3 py-1.5 text-rose-600 hover:bg-rose-50 flex items-center gap-2 font-medium"
                     >
-                      <LogOut size={13} /> Keluar (Logout)
+                      <LogOut size={13} /> Keluar
                     </button>
                   )}
                 </div>
