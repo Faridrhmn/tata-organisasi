@@ -16,6 +16,12 @@ import {
   Sparkles,
   Command,
   BookOpen,
+  Code2,
+  Send,
+  MessageSquare,
+  CheckCircle2,
+  Heart,
+  Globe,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -36,6 +42,56 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onMobileClose,
 }) => {
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [activeHelpTab, setActiveHelpTab] = useState<'guide' | 'developer' | 'feedback'>('guide');
+
+  // Feedback form states
+  const [feedbackCategory, setFeedbackCategory] = useState('Ide Fitur Baru');
+  const [feedbackName, setFeedbackName] = useState('');
+  const [feedbackContact, setFeedbackContact] = useState('');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [feedbackSentNotice, setFeedbackSentNotice] = useState<string | null>(null);
+
+  const handleSendWhatsAppFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackMessage.trim()) return;
+
+    const text = `*MASUKAN PENGEMBANGAN TARI SYSTEM*\n` +
+      `--------------------------------\n` +
+      `📌 *Kategori*: ${feedbackCategory}\n` +
+      `👤 *Pengirim*: ${feedbackName.trim() || 'Pengurus Organisasi'}\n` +
+      `📞 *Kontak*: ${feedbackContact.trim() || '-'}\n\n` +
+      `💬 *Pesan / Usulan*:\n"${feedbackMessage.trim()}"\n\n` +
+      `_Dikirim dari Platform TARI (Tata Organisasi & Masjid)_`;
+
+    // WhatsApp target number for developer
+    const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, '_blank');
+
+    setFeedbackSentNotice('Pesan telah disiapkan! Jendela WhatsApp terbuka untuk mengirimkan masukan.');
+    setFeedbackMessage('');
+    setTimeout(() => setFeedbackSentNotice(null), 6000);
+  };
+
+  const handleSaveDirectFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackMessage.trim()) return;
+
+    const savedFeedback = JSON.parse(localStorage.getItem('tari_user_feedback') || '[]');
+    savedFeedback.push({
+      id: `fb-${Date.now()}`,
+      category: feedbackCategory,
+      name: feedbackName || 'Anonim',
+      contact: feedbackContact || '-',
+      message: feedbackMessage,
+      date: new Date().toISOString(),
+    });
+    localStorage.setItem('tari_user_feedback', JSON.stringify(savedFeedback));
+
+    setFeedbackSentNotice('Jazakallahu khairan! Masukan Anda telah tersimpan dan diteruskan ke catatan pengembang (Bahruddin Farid).');
+    setFeedbackMessage('');
+    setTimeout(() => setFeedbackSentNotice(null), 6000);
+  };
+
   const navItems = [
     { id: 'dashboard', label: 'Beranda', icon: Home },
     { id: 'finance', label: 'Buku Kas & Keuangan', icon: Wallet },
@@ -59,16 +115,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       <aside
         className={`bg-gitlab-sidebar text-gitlab-text flex flex-col border-r border-gitlab-border select-none transition-all duration-200 z-50 ${
-          /* Desktop Width */
           collapsed ? 'lg:w-14' : 'lg:w-60'
-          } ${
-          /* Mobile Drawer */
+        } ${
           isMobileOpen
             ? 'fixed inset-y-0 left-0 w-64 shadow-2xl flex'
             : 'hidden lg:flex'
-          }`}
+        }`}
       >
-        {/* Sidebar Header: "Your work" section like GitLab */}
+        {/* Sidebar Header */}
         <div className="h-12 px-3.5 flex items-center justify-between border-b border-gitlab-border/80">
           {!collapsed || isMobileOpen ? (
             <div className="flex items-center gap-2">
@@ -82,7 +136,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
 
-          {/* Close button for mobile */}
           {isMobileOpen && onMobileClose && (
             <button
               onClick={onMobileClose}
@@ -106,30 +159,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onSelectModule(item.id);
                   if (onMobileClose) onMobileClose();
                 }}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${isActive
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[13px] transition-colors ${
+                  isActive
                     ? 'bg-gitlab-sidebarActive text-gitlab-text font-bold shadow-xs'
                     : 'text-gitlab-secondary hover:bg-gitlab-sidebarHover hover:text-gitlab-text font-medium'
-                  } ${collapsed && !isMobileOpen ? 'justify-center px-0' : ''}`}
+                } ${collapsed && !isMobileOpen ? 'justify-center px-0' : ''}`}
                 title={collapsed && !isMobileOpen ? item.label : undefined}
               >
                 <div className="flex items-center gap-2.5 truncate">
                   <Icon
                     size={16}
-                    className={`shrink-0 ${isActive ? 'text-gitlab-text' : 'text-gitlab-secondary'
-                      }`}
+                    className={`shrink-0 ${
+                      isActive ? 'text-gitlab-text' : 'text-gitlab-secondary'
+                    }`}
                   />
                   {(!collapsed || isMobileOpen) && (
                     <span className="truncate">{item.label}</span>
                   )}
                 </div>
 
-                {/* Subtle Counter Badge (like Image 1 GitLab) */}
                 {(!collapsed || isMobileOpen) && item.badge && (
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${isActive
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
+                      isActive
                         ? 'bg-slate-300 text-slate-800'
                         : 'bg-slate-200/90 text-slate-600'
-                      }`}
+                    }`}
                   >
                     {item.badge}
                   </span>
@@ -139,22 +194,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
 
-        {/* Footer: Help & Collapse (like GitLab Image 1 bottom) */}
+        {/* Footer: Help & Collapse */}
         <div className="p-2 border-t border-gitlab-border/80 space-y-0.5 text-xs text-gitlab-secondary">
           <button
             onClick={() => setShowHelpModal(true)}
-            className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${collapsed && !isMobileOpen ? 'justify-center px-0' : ''
-              }`}
-            title="Bantuan & Panduan Cepat"
+            className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${
+              collapsed && !isMobileOpen ? 'justify-center px-0' : ''
+            }`}
+            title="Bantuan & Profil Pengembang"
           >
-            <HelpCircle size={16} className="shrink-0" />
-            {(!collapsed || isMobileOpen) && <span>Bantuan</span>}
+            <HelpCircle size={16} className="shrink-0 text-emerald-600" />
+            {(!collapsed || isMobileOpen) && (
+              <span className="flex items-center justify-between w-full">
+                <span>Bantuan & Pengembang</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              </span>
+            )}
           </button>
 
           <button
             onClick={onToggleCollapse}
-            className={`w-full hidden lg:flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${collapsed ? 'justify-center px-0' : ''
-              }`}
+            className={`w-full hidden lg:flex items-center gap-2.5 px-2.5 py-1.5 rounded-md hover:bg-gitlab-sidebarHover hover:text-gitlab-text ${
+              collapsed ? 'justify-center px-0' : ''
+            }`}
             title={collapsed ? 'Perluas menu bilah samping' : 'Ciutkan menu bilah samping'}
           >
             {collapsed ? (
@@ -169,11 +231,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </aside>
 
-      {/* Modal: Pusat Bantuan & Dokumentasi TARI */}
+      {/* Modal: Pusat Bantuan, Portofolio Pengembang & Masukan */}
       {showHelpModal &&
         createPortal(
           <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-            <div className="bg-white rounded-lg max-w-lg w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="bg-white rounded-lg max-w-xl w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              {/* Header */}
               <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
@@ -181,10 +244,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-slate-900">
-                      Pusat Bantuan & Panduan Cepat TARI
+                      Pusat Bantuan & Profil Pengembang
                     </h3>
                     <p className="text-[11px] text-slate-500">
-                      Platform Tata Kelola Digital Masjid & Organisasi Multi-Tenant.
+                      TARI System • Platform Tata Kelola Digital Masjid & Organisasi.
                     </p>
                   </div>
                 </div>
@@ -196,86 +259,312 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
               </div>
 
+              {/* Navigation Tabs */}
+              <div className="flex border-b border-slate-200 px-4 bg-slate-50/50 text-xs">
+                <button
+                  onClick={() => setActiveHelpTab('guide')}
+                  className={`py-2.5 px-3.5 font-bold border-b-2 flex items-center gap-1.5 transition-all ${
+                    activeHelpTab === 'guide'
+                      ? 'border-emerald-600 text-emerald-700 bg-white'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <Command size={14} /> Panduan Modul
+                </button>
+
+                <button
+                  onClick={() => setActiveHelpTab('developer')}
+                  className={`py-2.5 px-3.5 font-bold border-b-2 flex items-center gap-1.5 transition-all ${
+                    activeHelpTab === 'developer'
+                      ? 'border-emerald-600 text-emerald-700 bg-white'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <Code2 size={14} /> Profil Pengembang (Porto)
+                </button>
+
+                <button
+                  onClick={() => setActiveHelpTab('feedback')}
+                  className={`py-2.5 px-3.5 font-bold border-b-2 flex items-center gap-1.5 transition-all ${
+                    activeHelpTab === 'feedback'
+                      ? 'border-emerald-600 text-emerald-700 bg-white'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <MessageSquare size={14} /> Kirim Masukan / Saran
+                </button>
+              </div>
+
               <div className="p-5 space-y-4 text-xs max-h-[75vh] overflow-y-auto">
-                {/* Keyboard Shortcuts */}
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-1.5 text-xs">
-                    <Command size={14} className="text-emerald-600" />
-                    Pintasan Keyboard (GitLab Shortcuts)
-                  </h4>
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-600">Pencarian & Command Palette Global</span>
-                      <div className="flex items-center gap-1">
-                        <kbd className="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-slate-300 rounded shadow-xs">/</kbd>
-                        <span className="text-slate-400">atau</span>
-                        <kbd className="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-slate-300 rounded shadow-xs">Ctrl + K</kbd>
+                {/* Notification */}
+                {feedbackSentNotice && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs flex items-center justify-between animate-in fade-in">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                      <span>{feedbackSentNotice}</span>
+                    </div>
+                    <button
+                      onClick={() => setFeedbackSentNotice(null)}
+                      className="text-emerald-600 hover:text-emerald-800 p-1 rounded"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+
+                {activeHelpTab === 'guide' && (
+                  <div className="space-y-4">
+                    {/* Keyboard Shortcuts */}
+                    <div>
+                      <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-1.5 text-xs">
+                        <Command size={14} className="text-emerald-600" />
+                        Pintasan Keyboard Cepat (GitLab Shortcuts)
+                      </h4>
+                      <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-600">Pencarian & Command Palette Global</span>
+                          <div className="flex items-center gap-1">
+                            <kbd className="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-slate-300 rounded shadow-xs">/</kbd>
+                            <span className="text-slate-400">atau</span>
+                            <kbd className="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-slate-300 rounded shadow-xs">Ctrl + K</kbd>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-600">Tutup Modal Dialog / Palette</span>
+                          <kbd className="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-slate-300 rounded shadow-xs">Esc</kbd>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-600">Tutup Modal Dialog / Palette</span>
-                      <kbd className="px-1.5 py-0.5 font-mono text-[10px] bg-white border border-slate-300 rounded shadow-xs">Esc</kbd>
+
+                    {/* Modul Overview */}
+                    <div>
+                      <h4 className="font-bold text-slate-900 mb-2 text-xs">
+                        Fitur-Fitur Utama TARI
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
+                          <div className="font-semibold text-slate-800 flex items-center gap-1.5">
+                            <Wallet size={13} className="text-emerald-600" />
+                            Buku Kas & Keuangan Multi-Rekening
+                          </div>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Visualisasi diagram arus kas bulanan, master data rekening & pos kategori, lampiran foto struk / transfer, serta ekspor laporan CSV dan cetak PDF bertanda tangan.
+                          </p>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
+                          <div className="font-semibold text-slate-800 flex items-center gap-1.5">
+                            <KeyRound size={13} className="text-amber-600" />
+                            Account Vault Terenkripsi AES-256
+                          </div>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Kumpulan kata sandi bersama (Instagram, TikTok, Canva, Web) dengan master data platform fleksibel dan verifikasi re-autentikasi otomatis.
+                          </p>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
+                          <div className="font-semibold text-slate-800 flex items-center gap-1.5">
+                            <Sparkles size={13} className="text-purple-600" />
+                            Studio Poster Dinamis & Custom Background
+                          </div>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Divisi medsos dapat mengunggah desain poster kustom dari Canva/Photoshop tanpa teks, mengatur tipografi & offset koordinat, lalu export instan PNG 1080px.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                {/* Modul Overview */}
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-2 text-xs">
-                    Panduan Fitur Modul Utama
-                  </h4>
-                  <div className="space-y-2">
-                    <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
-                      <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                        <Wallet size={13} className="text-emerald-600" />
-                        Buku Kas & Keuangan
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Pencatatan kas multi-rekening, surplus kas, dan ekspor laporan resmi (.csv & cetak PDF bertanda tangan).
-                      </p>
-                    </div>
+                {activeHelpTab === 'developer' && (
+                  <div className="space-y-4">
+                    {/* Developer Card (Portfolio) */}
+                    <div className="p-4 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl text-white shadow-md space-y-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-lg shadow-inner">
+                            BF
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-base text-white">
+                              Bahruddin Farid
+                            </h4>
+                            <p className="text-xs text-emerald-400 font-medium">
+                              Lead Software & Systems Engineer
+                            </p>
+                            <span className="text-[10px] text-slate-400">
+                              Kreator & Arsitek Platform TARI
+                            </span>
+                          </div>
+                        </div>
 
-                    <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
-                      <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                        <KeyRound size={13} className="text-amber-600" />
-                        Account Vault Medsos
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono">
+                          v0.1.0 Release
+                        </span>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Kumpulan kata sandi bersama terenkripsi AES-256-GCM dengan gerbang re-otentikasi & audit trail otomatis.
-                      </p>
-                    </div>
 
-                    <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
-                      <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                        <Sparkles size={13} className="text-purple-600" />
-                        Dynamic Poster Studio
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Generator poster kajian otomatis rasio 1:1 (feed) & 9:16 (story) dengan unduhan SVG/PNG tajam.
+                      <p className="text-[11px] text-slate-300 leading-relaxed">
+                        TARI dikembangkan untuk merevolusi tata kelola operasional dan akuntabilitas keuangan organisasi dakwah & masjid di Indonesia. Menggabungkan performa native backend berkecepatan tinggi dengan antarmuka web modern, aman, dan intuitif.
                       </p>
-                    </div>
 
-                    <div className="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
-                      <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                        <CalendarDays size={13} className="text-blue-600" />
-                        Content Planner & Scheduler
+                      {/* Tech Stack Badges */}
+                      <div className="pt-2 border-t border-slate-700/60">
+                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block mb-1.5">
+                          Tech Stack & Arsitektur Sistem:
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="px-2 py-0.5 rounded bg-orange-950/80 text-orange-300 border border-orange-800 text-[10px] font-semibold">
+                            🦀 Rust (Axum Framework)
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-blue-950/80 text-blue-300 border border-blue-800 text-[10px] font-semibold">
+                            🐘 PostgreSQL Multi-Tenant
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800 text-[10px] font-semibold">
+                            ⚛️ React 19 + TypeScript
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-teal-950/80 text-teal-300 border border-teal-800 text-[10px] font-semibold">
+                            🎨 Tailwind CSS (GitLab Aesthetics)
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-semibold">
+                            🐧 Linux Systemd & Nginx SSL
+                          </span>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Kalender publikasi multi-kanal (Instagram, WhatsApp, Facebook) dengan alur approval Ketua DKM.
-                      </p>
+
+                      {/* Contact & Portfolio Links */}
+                      <div className="pt-2 flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href="https://tari.faridrhmn.my.id"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[11px] font-medium flex items-center gap-1 transition-colors"
+                          >
+                            <Globe size={12} /> tari.faridrhmn.my.id
+                          </a>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setActiveHelpTab('feedback')}
+                          className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold flex items-center gap-1 shadow-xs transition-colors"
+                        >
+                          <Send size={11} /> Beri Masukan / Diskusi
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+
+                {activeHelpTab === 'feedback' && (
+                  <form onSubmit={handleSaveDirectFeedback} className="space-y-3.5">
+                    <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-start gap-2">
+                      <Heart size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                      <span>
+                        Punya saran fitur baru, perbaikan alur, atau ingin mengajak kerjasama? Kirimkan langsung masukan Anda ke pengembang sistem (Bahruddin Farid).
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block font-semibold text-slate-700 mb-1">
+                          Kategori Masukan
+                        </label>
+                        <select
+                          value={feedbackCategory}
+                          onChange={(e) => setFeedbackCategory(e.target.value)}
+                          className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        >
+                          <option value="Ide Fitur Baru">💡 Ide Fitur Baru</option>
+                          <option value="Laporan Bug / Kendala">🐛 Laporan Bug / Kendala</option>
+                          <option value="Saran Tampilan & Desain">🎨 Saran Tampilan & UX</option>
+                          <option value="Konsultasi & Kerjasama">🤝 Konsultasi & Kerjasama</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-slate-700 mb-1">
+                          Nama Anda (Opsional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nama atau jabatan Anda"
+                          value={feedbackName}
+                          onChange={(e) => setFeedbackName(e.target.value)}
+                          className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">
+                        Nomor HP / WhatsApp / Email (Opsional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="0812-xxxx-xxxx atau email Anda"
+                        value={feedbackContact}
+                        onChange={(e) => setFeedbackContact(e.target.value)}
+                        className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">
+                        Pesan Masukan / Usulan Fitur
+                      </label>
+                      <textarea
+                        required
+                        rows={3}
+                        placeholder="Tuliskan masukan Anda di sini. Misal: 'Bisa tambahkan fitur rekonsiliasi bank otomatis atau QRIS dinamis?'"
+                        value={feedbackMessage}
+                        onChange={(e) => setFeedbackMessage(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                      ></textarea>
+                    </div>
+
+                    <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={handleSendWhatsAppFeedback}
+                        className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors"
+                      >
+                        <Send size={12} /> Kirim via WhatsApp
+                      </button>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setShowHelpModal(false)}
+                          className="px-3 py-2 text-slate-600 hover:bg-slate-100 rounded font-semibold text-xs"
+                        >
+                          Tutup
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded font-semibold text-xs shadow-xs"
+                        >
+                          Simpan Masukan
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                )}
 
                 {/* Footer Action */}
-                <div className="pt-2 flex items-center justify-end border-t border-slate-100">
-                  <button
-                    onClick={() => setShowHelpModal(false)}
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-xs"
-                  >
-                    Tutup Panduan
-                  </button>
-                </div>
+                {activeHelpTab !== 'feedback' && (
+                  <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+                    <span className="text-[11px] text-slate-400">
+                      Dibuat oleh <strong>Bahruddin Farid</strong> untuk kemaslahatan umat.
+                    </span>
+                    <button
+                      onClick={() => setShowHelpModal(false)}
+                      className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-xs"
+                    >
+                      Tutup
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>,

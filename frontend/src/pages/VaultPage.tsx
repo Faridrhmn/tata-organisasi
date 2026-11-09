@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   KeyRound,
@@ -16,9 +16,24 @@ import {
   Mail,
   Globe,
   Sparkles,
+  Youtube,
+  Share2,
+  MessageCircle,
+  ShoppingBag,
+  Video,
+  Settings2,
+  Trash2,
+  Layers,
 } from 'lucide-react';
 
-interface Credential {
+export interface PlatformMaster {
+  id: string;
+  name: string;
+  iconName: 'Instagram' | 'Facebook' | 'Sparkles' | 'Mail' | 'Globe' | 'Youtube' | 'Share2' | 'MessageCircle' | 'ShoppingBag' | 'Video';
+  color: string;
+}
+
+export interface Credential {
   id: string;
   platform: string;
   label: string;
@@ -29,11 +44,46 @@ interface Credential {
   mock_password?: string;
 }
 
+const DEFAULT_PLATFORMS: PlatformMaster[] = [
+  { id: 'plat-1', name: 'Instagram', iconName: 'Instagram', color: '#ec4899' },
+  { id: 'plat-2', name: 'Facebook', iconName: 'Facebook', color: '#3b82f6' },
+  { id: 'plat-3', name: 'Canva', iconName: 'Sparkles', color: '#06b6d4' },
+  { id: 'plat-4', name: 'Email / Workspace', iconName: 'Mail', color: '#f59e0b' },
+  { id: 'plat-5', name: 'Website / cPanel', iconName: 'Globe', color: '#64748b' },
+  { id: 'plat-6', name: 'YouTube', iconName: 'Youtube', color: '#ef4444' },
+  { id: 'plat-7', name: 'TikTok', iconName: 'Video', color: '#a855f7' },
+  { id: 'plat-8', name: 'WhatsApp Business', iconName: 'MessageCircle', color: '#10b981' },
+  { id: 'plat-9', name: 'Linktree / Bio', iconName: 'Share2', color: '#14b8a6' },
+];
+
 export const VaultPage: React.FC = () => {
   const [filterPlatform, setFilterPlatform] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showPlatformMasterModal, setShowPlatformMasterModal] = useState(false);
   const [showReauthModal, setShowReauthModal] = useState(false);
   const [selectedCred, setSelectedCred] = useState<Credential | null>(null);
+
+  // Master Data Platforms with LocalStorage persistence
+  const [platforms, setPlatforms] = useState<PlatformMaster[]>(() => {
+    const saved = localStorage.getItem('tari_vault_platforms');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return DEFAULT_PLATFORMS;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('tari_vault_platforms', JSON.stringify(platforms));
+  }, [platforms]);
+
+  // Master Data Add Form
+  const [newPlatName, setNewPlatName] = useState('');
+  const [newPlatIcon, setNewPlatIcon] = useState<PlatformMaster['iconName']>('Globe');
+  const [newPlatColor, setNewPlatColor] = useState('#3b82f6');
 
   // Re-auth form states
   const [userPassword, setUserPassword] = useState('');
@@ -42,11 +92,13 @@ export const VaultPage: React.FC = () => {
   const [reauthError, setReauthError] = useState<string | null>(null);
 
   // New Credential Form states
-  const [newPlatform, setNewPlatform] = useState('Instagram');
+  const [newPlatform, setNewPlatform] = useState(() => platforms[0]?.name || 'Instagram');
   const [newLabel, setNewLabel] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newNotes, setNewNotes] = useState('');
+  const [newRecoveryEmail, setNewRecoveryEmail] = useState('');
+  const [newPhone, setNewPhone] = useState('');
 
   // Demonstration credentials
   const [credentials, setCredentials] = useState<Credential[]>([
@@ -79,7 +131,7 @@ export const VaultPage: React.FC = () => {
     },
     {
       id: 'vault-4',
-      platform: 'Email',
+      platform: 'Email / Workspace',
       label: 'Google Workspace Humas',
       username: 'humas@alikhlas.org',
       recovery_email: 'sekretariat@alikhlas.org',
@@ -88,7 +140,7 @@ export const VaultPage: React.FC = () => {
     },
     {
       id: 'vault-5',
-      platform: 'Website',
+      platform: 'Website / cPanel',
       label: 'cPanel Hosting & Domain',
       username: 'alikhlas_adm',
       notes: 'Hosting di Niagahoster, perpanjangan Mei 2027.',
@@ -96,19 +148,39 @@ export const VaultPage: React.FC = () => {
     },
   ]);
 
-  const getPlatformIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
-      case 'instagram':
-        return <Instagram className="text-pink-500" size={18} />;
-      case 'facebook':
-        return <Facebook className="text-blue-500" size={18} />;
-      case 'canva':
-        return <Sparkles className="text-cyan-500" size={18} />;
-      case 'email':
-        return <Mail className="text-amber-500" size={18} />;
+  const renderIcon = (iconName: string, color: string, size = 18) => {
+    switch (iconName) {
+      case 'Instagram':
+        return <Instagram style={{ color }} size={size} />;
+      case 'Facebook':
+        return <Facebook style={{ color }} size={size} />;
+      case 'Sparkles':
+        return <Sparkles style={{ color }} size={size} />;
+      case 'Mail':
+        return <Mail style={{ color }} size={size} />;
+      case 'Youtube':
+        return <Youtube style={{ color }} size={size} />;
+      case 'MessageCircle':
+        return <MessageCircle style={{ color }} size={size} />;
+      case 'ShoppingBag':
+        return <ShoppingBag style={{ color }} size={size} />;
+      case 'Video':
+        return <Video style={{ color }} size={size} />;
+      case 'Share2':
+        return <Share2 style={{ color }} size={size} />;
       default:
-        return <Globe className="text-slate-500" size={18} />;
+        return <Globe style={{ color }} size={size} />;
     }
+  };
+
+  const getPlatformIcon = (platformName: string) => {
+    const matched = platforms.find(
+      (p) => p.name.toLowerCase() === platformName.toLowerCase()
+    );
+    if (matched) {
+      return renderIcon(matched.iconName, matched.color);
+    }
+    return <Globe className="text-slate-500" size={18} />;
   };
 
   const handleOpenReveal = (cred: Credential) => {
@@ -135,7 +207,6 @@ export const VaultPage: React.FC = () => {
       return;
     }
 
-    // Simulasi verifikasi re-autentikasi (atau panggilan ke API /vault/credentials/:id/reveal)
     setRevealedPasswords({
       ...revealedPasswords,
       [selectedCred.id]: selectedCred.mock_password || 'SecretTari2026!',
@@ -160,6 +231,8 @@ export const VaultPage: React.FC = () => {
       platform: newPlatform,
       label: newLabel,
       username: newUsername,
+      recovery_email: newRecoveryEmail.trim() || undefined,
+      phone_number: newPhone.trim() || undefined,
       notes: newNotes,
       mock_password: newPassword,
     };
@@ -170,6 +243,36 @@ export const VaultPage: React.FC = () => {
     setNewUsername('');
     setNewPassword('');
     setNewNotes('');
+    setNewRecoveryEmail('');
+    setNewPhone('');
+  };
+
+  const handleCreatePlatform = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPlatName.trim()) return;
+
+    const created: PlatformMaster = {
+      id: `plat-${Date.now()}`,
+      name: newPlatName.trim(),
+      iconName: newPlatIcon,
+      color: newPlatColor,
+    };
+
+    setPlatforms([...platforms, created]);
+    setNewPlatName('');
+  };
+
+  const handleDeletePlatform = (id: string, name: string) => {
+    if (platforms.length <= 1) {
+      alert('Minimal harus ada satu platform dalam master data.');
+      return;
+    }
+    if (confirm(`Hapus platform "${name}" dari master data?`)) {
+      setPlatforms(platforms.filter((p) => p.id !== id));
+      if (newPlatform === name) {
+        setNewPlatform(platforms[0]?.name || '');
+      }
+    }
   };
 
   const filteredCredentials = credentials.filter((c) => {
@@ -191,13 +294,24 @@ export const VaultPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
-        >
-          <Plus size={15} />
-          Simpan Akun Baru
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowPlatformMasterModal(true)}
+            className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
+            title="Kelola Master Platform Akun"
+          >
+            <Settings2 size={14} className="text-slate-600" />
+            Master Platform ({platforms.length})
+          </button>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
+          >
+            <Plus size={15} />
+            Simpan Akun Baru
+          </button>
+        </div>
       </div>
 
       {/* Zero-Trust Security Banner (GitLab Alert Style) */}
@@ -227,20 +341,43 @@ export const VaultPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Platform Filter Tabs (GitLab Pill Tabs) */}
+      {/* Dynamic Platform Filter Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        {['all', 'Instagram', 'Facebook', 'Canva', 'Email', 'Website'].map((plat) => (
-          <button
-            key={plat}
-            onClick={() => setFilterPlatform(plat)}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${filterPlatform.toLowerCase() === plat.toLowerCase()
-                ? 'bg-gitlab-sidebarActive text-gitlab-text shadow-xs'
-                : 'bg-white text-gitlab-secondary hover:text-gitlab-text hover:bg-slate-100 border border-gitlab-panelBorder'
+        <button
+          onClick={() => setFilterPlatform('all')}
+          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 ${
+            filterPlatform === 'all'
+              ? 'bg-gitlab-sidebarActive text-gitlab-text shadow-xs'
+              : 'bg-white text-gitlab-secondary hover:text-gitlab-text hover:bg-slate-100 border border-gitlab-panelBorder'
+          }`}
+        >
+          Semua Platform ({credentials.length})
+        </button>
+
+        {platforms.map((plat) => {
+          const count = credentials.filter(
+            (c) => c.platform.toLowerCase() === plat.name.toLowerCase()
+          ).length;
+          return (
+            <button
+              key={plat.id}
+              onClick={() => setFilterPlatform(plat.name)}
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 ${
+                filterPlatform.toLowerCase() === plat.name.toLowerCase()
+                  ? 'bg-gitlab-sidebarActive text-gitlab-text shadow-xs'
+                  : 'bg-white text-gitlab-secondary hover:text-gitlab-text hover:bg-slate-100 border border-gitlab-panelBorder'
               }`}
-          >
-            {plat === 'all' ? 'Semua Platform' : plat}
-          </button>
-        ))}
+            >
+              {renderIcon(plat.iconName, plat.color, 13)}
+              <span>{plat.name}</span>
+              {count > 0 && (
+                <span className="text-[10px] bg-slate-100 text-slate-600 px-1 py-0.2 rounded font-mono">
+                  {count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Credentials Grid */}
@@ -252,50 +389,42 @@ export const VaultPage: React.FC = () => {
           return (
             <div
               key={cred.id}
-              className="bg-white rounded-lg border border-gitlab-panelBorder p-4 shadow-gitlab hover:border-slate-300 transition-all flex flex-col justify-between space-y-3.5"
+              className="bg-white rounded-lg border border-gitlab-panelBorder p-4 shadow-gitlab flex flex-col justify-between hover:border-slate-300 transition-all group"
             >
               <div>
-                {/* Header Card */}
+                {/* Header card: Icon + Platform + Label */}
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                    <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
                       {getPlatformIcon(cred.platform)}
                     </div>
                     <div>
-                      <h3 className="text-xs font-bold text-slate-900 line-clamp-1">
-                        {cred.label}
-                      </h3>
-                      <span className="text-[10px] text-slate-400 font-mono">
+                      <h3 className="font-bold text-slate-900 text-xs line-clamp-1">{cred.label}</h3>
+                      <span className="text-[11px] text-slate-500 flex items-center gap-1">
                         {cred.platform}
                       </span>
                     </div>
                   </div>
-
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Aman
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
+                    AES-256
                   </span>
                 </div>
 
-                {/* Username */}
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 mb-3 space-y-1">
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
-                    Username / ID Akun
+                {/* Account Details: Username */}
+                <div className="bg-slate-50/80 rounded-md p-2.5 border border-slate-200/80 space-y-1 mb-3">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                    Username / ID Login
                   </span>
-                  <div className="font-mono text-xs font-bold text-slate-800 break-all select-all">
+                  <div className="font-mono text-xs font-semibold text-slate-800 break-all select-all">
                     {cred.username}
                   </div>
                 </div>
 
-                {/* Password Box */}
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-100 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                      Kata Sandi
-                    </span>
-                    <span className="text-[9px] text-slate-400 font-mono">
-                      {isRevealed ? 'Terbuka' : 'Terenkripsi'}
-                    </span>
-                  </div>
+                {/* Password field with reveal & copy */}
+                <div className="bg-slate-50/80 rounded-md p-2.5 border border-slate-200/80 space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                    Kata Sandi Rahasia
+                  </span>
 
                   <div className="flex items-center justify-between gap-2 pt-0.5">
                     <div className="font-mono text-xs font-bold text-slate-800 tracking-wider truncate">
@@ -313,10 +442,11 @@ export const VaultPage: React.FC = () => {
 
                       <button
                         onClick={() => handleCopyPassword(cred)}
-                        className={`p-1 rounded transition-colors ${isCopied
+                        className={`p-1 rounded transition-colors ${
+                          isCopied
                             ? 'text-emerald-600 bg-emerald-50'
                             : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60'
-                          }`}
+                        }`}
                         title="Salin Password ke Clipboard"
                       >
                         {isCopied ? <Check size={15} /> : <Copy size={15} />}
@@ -334,12 +464,10 @@ export const VaultPage: React.FC = () => {
               </div>
 
               {/* Card Footer */}
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 mt-3">
                 <span>{cred.phone_number || cred.recovery_email || 'Organisasi'}</span>
                 {isCopied && (
-                  <span className="text-emerald-600 font-semibold animate-pulse">
-                    Tersalin!
-                  </span>
+                  <span className="text-emerald-600 font-semibold animate-pulse">Tersalin!</span>
                 )}
               </div>
             </div>
@@ -356,6 +484,139 @@ export const VaultPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Modal: Kelola Master Platform */}
+      {showPlatformMasterModal &&
+        createPortal(
+          <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+            <div className="bg-white rounded-lg max-w-lg w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
+                <div className="flex items-center gap-2">
+                  <Layers size={18} className="text-amber-500" />
+                  <div>
+                    <h3 className="font-bold text-sm text-slate-900">
+                      Kelola Master Platform Akun
+                    </h3>
+                    <p className="text-[11px] text-slate-500">
+                      Tambah atau kelola kategori platform kredensial (Instagram, TikTok, Website, dll).
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowPlatformMasterModal(false)}
+                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200/50"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="p-5 space-y-4 text-xs max-h-[75vh] overflow-y-auto">
+                {/* Form Tambah Platform */}
+                <form
+                  onSubmit={handleCreatePlatform}
+                  className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-3"
+                >
+                  <span className="font-bold text-slate-900 block text-xs">
+                    + Tambah Platform Baru
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[11px] text-slate-600 mb-1">Nama Platform</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Cth: TikTok Official / Shopee"
+                        value={newPlatName}
+                        onChange={(e) => setNewPlatName(e.target.value)}
+                        className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-slate-600 mb-1">Pilih Ikon</label>
+                      <select
+                        value={newPlatIcon}
+                        onChange={(e) =>
+                          setNewPlatIcon(e.target.value as PlatformMaster['iconName'])
+                        }
+                        className="w-full px-2 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      >
+                        <option value="Instagram">Instagram</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Sparkles">Sparkles / Desain</option>
+                        <option value="Mail">Email / Workspace</option>
+                        <option value="Globe">Globe / Web</option>
+                        <option value="Youtube">YouTube</option>
+                        <option value="Video">Video / TikTok</option>
+                        <option value="MessageCircle">Chat / WhatsApp</option>
+                        <option value="Share2">Share / Linktree</option>
+                        <option value="ShoppingBag">Belanja / Toko</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-slate-500">Warna Ikon:</span>
+                      <input
+                        type="color"
+                        value={newPlatColor}
+                        onChange={(e) => setNewPlatColor(e.target.value)}
+                        className="w-8 h-8 rounded border border-slate-300 cursor-pointer p-0.5"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded shadow-xs"
+                    >
+                      Simpan Platform
+                    </button>
+                  </div>
+                </form>
+
+                {/* Platform List */}
+                <div className="space-y-2">
+                  <span className="font-bold text-slate-700 block text-[11px] uppercase tracking-wider">
+                    Daftar Platform Aktif ({platforms.length}):
+                  </span>
+                  <div className="divide-y divide-slate-100 border border-slate-200 rounded-lg overflow-hidden">
+                    {platforms.map((plat) => (
+                      <div
+                        key={plat.id}
+                        className="p-2.5 bg-white flex items-center justify-between hover:bg-slate-50 transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded bg-slate-50 border border-slate-200 flex items-center justify-center">
+                            {renderIcon(plat.iconName, plat.color, 14)}
+                          </div>
+                          <span className="font-bold text-slate-800">{plat.name}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeletePlatform(plat.id, plat.name)}
+                          className="text-slate-400 hover:text-rose-600 p-1 rounded transition-colors"
+                          title="Hapus Platform"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 border-t border-slate-200 bg-slate-50 flex items-center justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowPlatformMasterModal(false)}
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-xs"
+                >
+                  Selesai
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
 
       {/* Modal: Re-Authentication Security Gate */}
       {showReauthModal &&
@@ -447,21 +708,29 @@ export const VaultPage: React.FC = () => {
               <form onSubmit={handleCreateCredential} className="p-5 space-y-4 text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 mb-1.5">
-                      Platform
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="font-semibold text-slate-700">Platform</label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowAddModal(false);
+                          setShowPlatformMasterModal(true);
+                        }}
+                        className="text-[10px] text-amber-600 hover:underline"
+                      >
+                        + Kelola Master
+                      </button>
+                    </div>
                     <select
                       value={newPlatform}
                       onChange={(e) => setNewPlatform(e.target.value)}
                       className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                     >
-                      <option value="Instagram">Instagram</option>
-                      <option value="Facebook">Facebook</option>
-                      <option value="Canva">Canva</option>
-                      <option value="Email">Email / Workspace</option>
-                      <option value="Website">Website / Hosting</option>
-                      <option value="YouTube">YouTube</option>
-                      <option value="Lainnya">Lainnya</option>
+                      {platforms.map((plat) => (
+                        <option key={plat.id} value={plat.name}>
+                          {plat.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -508,6 +777,33 @@ export const VaultPage: React.FC = () => {
                   />
                 </div>
 
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1.5">
+                      Email Pemulihan (Opsional)
+                    </label>
+                    <input
+                      type="email"
+                      value={newRecoveryEmail}
+                      onChange={(e) => setNewRecoveryEmail(e.target.value)}
+                      placeholder="recovery@organisasi.org"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1.5">
+                      No. HP 2FA (Opsional)
+                    </label>
+                    <input
+                      type="text"
+                      value={newPhone}
+                      onChange={(e) => setNewPhone(e.target.value)}
+                      placeholder="0812-xxxx-xxxx"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1.5">
                     Catatan Tambahan (Opsional)
@@ -544,4 +840,3 @@ export const VaultPage: React.FC = () => {
     </div>
   );
 };
-

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Menu,
   Search,
@@ -19,6 +20,8 @@ import {
   X,
   ArrowRight,
   Clock,
+  Lock,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface Organization {
@@ -51,6 +54,69 @@ export const Topbar: React.FC<TopbarProps> = ({
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false);
   const [plusDropdownOpen, setPlusDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+  // User Profile State with LocalStorage persistence
+  const [profileData, setProfileData] = useState(() => {
+    const saved = localStorage.getItem('tari_user_profile');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return {
+      fullName: currentUser?.full_name || 'Patrick Maulana',
+      email: currentUser?.email || 'patrick@tari.org',
+      phone: '0812-3456-7890',
+    };
+  });
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileSuccessNotice, setProfileSuccessNotice] = useState<string | null>(null);
+
+  // Profile Form States
+  const [editName, setEditName] = useState(profileData.fullName);
+  const [editEmail, setEditEmail] = useState(profileData.email);
+  const [editPhone, setEditPhone] = useState(profileData.phone);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+
+    if (newPassword || confirmPassword) {
+      if (newPassword.length < 6) {
+        setPasswordError('Kata sandi baru minimal 6 karakter.');
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        setPasswordError('Konfirmasi kata sandi baru tidak cocok.');
+        return;
+      }
+      if (!oldPassword) {
+        setPasswordError('Masukkan kata sandi lama Anda untuk konfirmasi keamanan.');
+        return;
+      }
+    }
+
+    const updated = {
+      ...profileData,
+      fullName: editName.trim(),
+      email: editEmail.trim(),
+      phone: editPhone.trim(),
+    };
+
+    setProfileData(updated);
+    localStorage.setItem('tari_user_profile', JSON.stringify(updated));
+    setOldPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setProfileSuccessNotice('Profil berhasil diperbarui!');
+    setTimeout(() => setProfileSuccessNotice(null), 4000);
+  };
 
   // Search Command Palette State
   const [searchQuery, setSearchQuery] = useState('');
@@ -557,10 +623,10 @@ export const Topbar: React.FC<TopbarProps> = ({
               <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
                 <div className="px-3 py-2 border-b border-slate-100">
                   <div className="font-bold text-slate-900 truncate">
-                    {currentUser?.full_name || 'Patrick Maulana'}
+                    {profileData.fullName}
                   </div>
                   <div className="text-[11px] text-slate-400 truncate">
-                    {currentUser?.email || 'patrick@tari.org'}
+                    {profileData.email}
                   </div>
                   <span className="inline-block mt-1 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 capitalize">
                     {getRoleLabel(currentOrg.role)}
@@ -568,6 +634,20 @@ export const Topbar: React.FC<TopbarProps> = ({
                 </div>
 
                 <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setEditName(profileData.fullName);
+                      setEditEmail(profileData.email);
+                      setEditPhone(profileData.phone);
+                      setPasswordError(null);
+                      setShowProfileModal(true);
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-slate-700 hover:bg-slate-50 flex items-center gap-2 font-medium"
+                  >
+                    <User size={13} className="text-slate-500" /> Profil Saya
+                  </button>
+
                   {onLogout && (
                     <button
                       onClick={onLogout}
@@ -593,6 +673,158 @@ export const Topbar: React.FC<TopbarProps> = ({
           {getModuleTitle(currentModule)}
         </span>
       </div>
+
+      {/* Modal: Pengaturan Profil Saya */}
+      {showProfileModal &&
+        createPortal(
+          <div className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+            <div className="bg-white rounded-lg max-w-md w-full shadow-2xl border border-gitlab-panelBorder overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="p-4 border-b border-gitlab-panelBorder flex items-center justify-between bg-slate-50">
+                <div className="flex items-center gap-2">
+                  <User size={18} className="text-emerald-600" />
+                  <div>
+                    <h3 className="font-bold text-sm text-slate-900">
+                      Pengaturan Profil Pengguna
+                    </h3>
+                    <p className="text-[11px] text-slate-500">
+                      Informasi akun login dan keamanan kata sandi Anda.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowProfileModal(false)}
+                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200/50"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveProfile} className="p-5 space-y-4 text-xs max-h-[75vh] overflow-y-auto">
+                {profileSuccessNotice && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>{profileSuccessNotice}</span>
+                  </div>
+                )}
+
+                {passwordError && (
+                  <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs">
+                    {passwordError}
+                  </div>
+                )}
+
+                {/* Avatar Banner */}
+                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="w-12 h-12 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0">
+                    {profileData.fullName.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block text-xs">{profileData.fullName}</span>
+                    <span className="text-[11px] text-slate-500">{currentOrg.name}</span>
+                    <span className="inline-block mt-0.5 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 capitalize">
+                      {getRoleLabel(currentOrg.role)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Basic Info */}
+                <div className="space-y-3">
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                    <input
+                      type="text"
+                      required
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">Alamat Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={editEmail}
+                      onChange={(e) => setEditEmail(e.target.value)}
+                      className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">Nomor WhatsApp / HP</label>
+                    <input
+                      type="text"
+                      placeholder="0812-xxxx-xxxx"
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(e.target.value)}
+                      className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Change Password Section */}
+                <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200 space-y-3">
+                  <span className="font-bold text-slate-900 block text-xs flex items-center gap-1.5">
+                    <Lock size={13} className="text-slate-600" />
+                    Ubah Kata Sandi (Opsional)
+                  </span>
+
+                  <div>
+                    <label className="block text-[11px] text-slate-600 mb-1">Kata Sandi Lama</label>
+                    <input
+                      type="password"
+                      placeholder="Masukkan password lama"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[11px] text-slate-600 mb-1">Kata Sandi Baru</label>
+                      <input
+                        type="password"
+                        placeholder="Min. 6 karakter"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-slate-600 mb-1">Ulangi Sandi Baru</label>
+                      <input
+                        type="password"
+                        placeholder="Konfirmasi sandi"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowProfileModal(false)}
+                    className="px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold shadow-xs"
+                  >
+                    Simpan Perubahan
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
     </header>
   );
 };
