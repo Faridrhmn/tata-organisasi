@@ -922,7 +922,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ onScheduleToPlanner }) =
                 fontWeight="bold"
                 fontSize="24"
               >
-                📅 {dateText}
+                Hari / Tanggal: {dateText}
               </text>
               <text
                 x="180"
@@ -932,7 +932,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ onScheduleToPlanner }) =
                 fontWeight="medium"
                 fontSize="22"
               >
-                ⏰ {timeText}
+                Waktu: {timeText}
               </text>
               <text
                 x="180"
@@ -942,7 +942,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ onScheduleToPlanner }) =
                 fontWeight="bold"
                 fontSize="22"
               >
-                📍 {location.length > 45 ? `${location.substring(0, 43)}...` : location}
+                Lokasi: {location.length > 45 ? `${location.substring(0, 43)}...` : location}
               </text>
 
               {/* 8. Footer Branding */}

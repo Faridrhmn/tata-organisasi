@@ -732,45 +732,84 @@ export const FinancePage: React.FC = () => {
                 </div>
               </div>
 
-              {/* SVG Dynamic Bar Chart */}
-              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                <div className="h-44 flex items-end justify-between gap-3 pt-6 pb-2 px-2">
+              {/* Clean Enterprise SVG Bar Chart */}
+              <div className="bg-slate-50/70 p-3 sm:p-4 rounded-lg border border-slate-200">
+                <svg
+                  viewBox="0 0 520 185"
+                  className="w-full h-44 select-none overflow-visible"
+                  aria-label="Grafik Tren Arus Kas Bulanan"
+                >
+                  {/* Horizontal Gridlines & Y-Axis Scale */}
+                  <g className="text-[10px] fill-slate-400 font-mono">
+                    <line x1="45" y1="20" x2="510" y2="20" stroke="#e2e8f0" strokeDasharray="3 3" />
+                    <text x="40" y="23" textAnchor="end">12jt</text>
+
+                    <line x1="45" y1="63" x2="510" y2="63" stroke="#e2e8f0" strokeDasharray="3 3" />
+                    <text x="40" y="66" textAnchor="end">8jt</text>
+
+                    <line x1="45" y1="106" x2="510" y2="106" stroke="#e2e8f0" strokeDasharray="3 3" />
+                    <text x="40" y="109" textAnchor="end">4jt</text>
+
+                    <line x1="45" y1="150" x2="510" y2="150" stroke="#cbd5e1" strokeWidth="1.5" />
+                    <text x="40" y="153" textAnchor="end">0</text>
+                  </g>
+
+                  {/* Monthly Data Bars */}
                   {monthlyData.map((d, idx) => {
-                    const inHeight = Math.max(12, Math.round((d.in / maxMonthlyVal) * 120));
-                    const outHeight = Math.max(12, Math.round((d.out / maxMonthlyVal) * 120));
+                    const slotWidth = 465 / monthlyData.length;
+                    const center = 45 + idx * slotWidth + slotWidth / 2;
+                    const inHeight = Math.max(6, Math.min(125, Math.round((d.in / maxMonthlyVal) * 125)));
+                    const outHeight = Math.max(6, Math.min(125, Math.round((d.out / maxMonthlyVal) * 125)));
 
                     return (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                        <div className="w-full flex items-end justify-center gap-1.5 h-32">
-                          {/* In Bar */}
-                          <div
-                            style={{ height: `${inHeight}px` }}
-                            className="w-4 sm:w-6 bg-emerald-600 hover:bg-emerald-700 rounded-t-sm transition-all group relative cursor-pointer"
-                            title={`Pemasukan ${d.month}: ${formatRupiah(d.in)}`}
-                          >
-                            <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 font-mono">
-                              +{Math.round(d.in / 1000000)}jt
-                            </span>
-                          </div>
+                      <g key={idx} className="group">
+                        {/* Pemasukan (Kas Masuk) Bar */}
+                        <rect
+                          x={center - 20}
+                          y={150 - inHeight}
+                          width="17"
+                          height={inHeight}
+                          rx="3"
+                          fill="#10b981"
+                          className="hover:opacity-85 transition-opacity cursor-pointer"
+                        >
+                          <title>{`Pemasukan ${d.month}: ${formatRupiah(d.in)}`}</title>
+                        </rect>
 
-                          {/* Out Bar */}
-                          <div
-                            style={{ height: `${outHeight}px` }}
-                            className="w-4 sm:w-6 bg-rose-500 hover:bg-rose-600 rounded-t-sm transition-all group relative cursor-pointer"
-                            title={`Pengeluaran ${d.month}: ${formatRupiah(d.out)}`}
-                          >
-                            <span className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[9px] px-1 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 font-mono">
-                              -{Math.round(d.out / 1000000)}jt
-                            </span>
-                          </div>
-                        </div>
+                        {/* Pengeluaran (Kas Keluar) Bar */}
+                        <rect
+                          x={center + 3}
+                          y={150 - outHeight}
+                          width="17"
+                          height={outHeight}
+                          rx="3"
+                          fill="#f43f5e"
+                          className="hover:opacity-85 transition-opacity cursor-pointer"
+                        >
+                          <title>{`Pengeluaran ${d.month}: ${formatRupiah(d.out)}`}</title>
+                        </rect>
 
-                        <span className="text-[10px] font-semibold text-slate-600 mt-1 truncate max-w-full">
+                        {/* Month Axis Label */}
+                        <text
+                          x={center}
+                          y="170"
+                          textAnchor="middle"
+                          fontSize="11"
+                          fontWeight="600"
+                          fill="#334155"
+                        >
                           {d.month}
-                        </span>
-                      </div>
+                        </text>
+                      </g>
                     );
                   })}
+                </svg>
+
+                <div className="pt-2 border-t border-slate-200/80 mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                  <span>Rata-rata Arus Kas Masuk: <strong className="text-slate-800">Rp 9.250.000 / bln</strong></span>
+                  <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    Kondisi Kas: Surplus Sehat (+58%)
+                  </span>
                 </div>
               </div>
             </div>

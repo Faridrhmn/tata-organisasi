@@ -221,9 +221,9 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
             item.id === target.id ? { ...item, status: 'published' } : item
           )
         );
-        setDispatcherMessage(`🚀 [DISPATCHED] "${target.title}" berhasil dipublikasikan ke ${target.target_platforms.join(', ')}.`);
+        setDispatcherMessage(`[DIPUBLIKASIKAN] "${target.title}" berhasil dipublikasikan ke ${target.target_platforms.join(', ')}.`);
       } else {
-        setDispatcherMessage('ℹ️ Tidak ada postingan berstatus "Siap / Terjadwal" yang siap dipublikasikan.');
+        setDispatcherMessage('Tidak ada postingan berstatus "Siap / Terjadwal" yang siap dipublikasikan.');
       }
       setIsDispatching(false);
       setTimeout(() => setDispatcherMessage(null), 5000);
@@ -1129,7 +1129,7 @@ export const PlannerPage: React.FC<PlannerPageProps> = ({
                     <div className="bg-[#e5ddd5] rounded-lg p-3 text-xs space-y-2 border border-slate-300">
                       <div className="bg-white rounded-lg p-2.5 shadow-xs max-w-[90%] text-slate-900 space-y-1.5">
                         <span className="text-[10px] font-bold text-emerald-700 block">
-                          📢 Warta Masjid Al-Ikhlas
+                          Warta Masjid Al-Ikhlas
                         </span>
                         <div className="text-[11px] whitespace-pre-line font-sans leading-relaxed">
                           {newCaption || 'Pesan broadcast / status WhatsApp...'}

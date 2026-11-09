@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Clock } from 'lucide-react';
 import { AppLayout } from './components/layout/AppLayout';
 import { DashboardPage } from './pages/DashboardPage';
 import { FinancePage } from './pages/FinancePage';
@@ -100,7 +101,9 @@ export function App() {
 
       {currentModule !== 'dashboard' && currentModule !== 'finance' && currentModule !== 'vault' && currentModule !== 'poster' && currentModule !== 'planner' && currentModule !== 'audit' && currentModule !== 'members' && currentModule !== 'settings' && (
         <div className="bg-white rounded-lg p-12 text-center border border-gitlab-panelBorder shadow-gitlab">
-          <div className="text-3xl mb-3">🚧</div>
+          <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-500 mx-auto flex items-center justify-center mb-3">
+            <Clock size={24} />
+          </div>
           <h2 className="text-lg font-bold text-slate-800 capitalize mb-1">
             Modul {currentModule}
           </h2>

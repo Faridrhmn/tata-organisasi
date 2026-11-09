@@ -457,9 +457,10 @@ export const VaultPage: React.FC = () => {
 
                 {/* Notes & 2FA */}
                 {cred.notes && (
-                  <p className="text-[11px] text-slate-500 mt-3 italic line-clamp-2">
-                    💡 {cred.notes}
-                  </p>
+                  <div className="flex items-start gap-1.5 mt-2.5 text-[11px] text-slate-500 bg-slate-50 p-2 rounded border border-slate-200/60">
+                    <span className="font-semibold text-slate-600 shrink-0">Catatan:</span>
+                    <span className="line-clamp-2">{cred.notes}</span>
+                  </div>
                 )}
               </div>
 

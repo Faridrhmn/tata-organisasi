@@ -20,8 +20,12 @@ import {
   Send,
   MessageSquare,
   CheckCircle2,
-  Heart,
   Globe,
+  Terminal,
+  Database,
+  Layers,
+  Palette,
+  Server,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -55,13 +59,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
     e.preventDefault();
     if (!feedbackMessage.trim()) return;
 
-    const text = `*MASUKAN PENGEMBANGAN TARI SYSTEM*\n` +
+    const text =
+      `[MASUKAN PENGEMBANGAN TARI SYSTEM]\n` +
       `--------------------------------\n` +
-      `📌 *Kategori*: ${feedbackCategory}\n` +
-      `👤 *Pengirim*: ${feedbackName.trim() || 'Pengurus Organisasi'}\n` +
-      `📞 *Kontak*: ${feedbackContact.trim() || '-'}\n\n` +
-      `💬 *Pesan / Usulan*:\n"${feedbackMessage.trim()}"\n\n` +
-      `_Dikirim dari Platform TARI (Tata Organisasi & Masjid)_`;
+      `Kategori : ${feedbackCategory}\n` +
+      `Pengirim : ${feedbackName.trim() || 'Pengurus Organisasi'}\n` +
+      `Kontak   : ${feedbackContact.trim() || '-'}\n\n` +
+      `Pesan / Usulan:\n"${feedbackMessage.trim()}"\n\n` +
+      `Dikirim dari Platform TARI (tari.faridrhmn.my.id)`;
 
     // WhatsApp target number for developer
     const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(text)}`;
@@ -379,77 +384,81 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {activeHelpTab === 'developer' && (
                   <div className="space-y-4">
                     {/* Developer Card (Portfolio) */}
-                    <div className="p-4 bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl text-white shadow-md space-y-3">
+                    <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-xs space-y-3.5">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-lg shadow-inner">
+                          <div className="w-11 h-11 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-xs">
                             BF
                           </div>
                           <div>
-                            <h4 className="font-bold text-base text-white">
+                            <h4 className="font-bold text-sm text-slate-900">
                               Bahruddin Farid
                             </h4>
-                            <p className="text-xs text-emerald-400 font-medium">
+                            <p className="text-xs text-emerald-700 font-semibold">
                               Lead Software & Systems Engineer
                             </p>
-                            <span className="text-[10px] text-slate-400">
-                              Kreator & Arsitek Platform TARI
+                            <span className="text-[11px] text-slate-500">
+                              Arsitek & Pengembang Platform TARI
                             </span>
                           </div>
                         </div>
 
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono">
-                          v0.1.0 Release
+                        <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-slate-100 text-slate-600 border border-slate-200">
+                          v0.1.0-release
                         </span>
                       </div>
 
-                      <p className="text-[11px] text-slate-300 leading-relaxed">
-                        TARI dikembangkan untuk merevolusi tata kelola operasional dan akuntabilitas keuangan organisasi dakwah & masjid di Indonesia. Menggabungkan performa native backend berkecepatan tinggi dengan antarmuka web modern, aman, dan intuitif.
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        TARI dirancang dengan standar keandalan tinggi dan arsitektur multi-tenant modern untuk digitalisasi tata kelola operasional, transparansi buku kas, dan publikasi media organisasi dakwah di Indonesia.
                       </p>
 
                       {/* Tech Stack Badges */}
-                      <div className="pt-2 border-t border-slate-700/60">
-                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block mb-1.5">
-                          Tech Stack & Arsitektur Sistem:
+                      <div className="pt-2 border-t border-slate-100">
+                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block mb-2">
+                          Arsitektur & Tech Stack Sistem:
                         </span>
                         <div className="flex flex-wrap gap-1.5">
-                          <span className="px-2 py-0.5 rounded bg-orange-950/80 text-orange-300 border border-orange-800 text-[10px] font-semibold">
-                            🦀 Rust (Axum Framework)
+                          <span className="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-medium flex items-center gap-1.5">
+                            <Terminal size={12} className="text-orange-600" />
+                            Rust (Axum Framework)
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-blue-950/80 text-blue-300 border border-blue-800 text-[10px] font-semibold">
-                            🐘 PostgreSQL Multi-Tenant
+                          <span className="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-medium flex items-center gap-1.5">
+                            <Database size={12} className="text-blue-600" />
+                            PostgreSQL Multi-Tenant
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800 text-[10px] font-semibold">
-                            ⚛️ React 19 + TypeScript
+                          <span className="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-medium flex items-center gap-1.5">
+                            <Layers size={12} className="text-cyan-600" />
+                            React 19 + TypeScript
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-teal-950/80 text-teal-300 border border-teal-800 text-[10px] font-semibold">
-                            🎨 Tailwind CSS (GitLab Aesthetics)
+                          <span className="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-medium flex items-center gap-1.5">
+                            <Palette size={12} className="text-teal-600" />
+                            Tailwind CSS
                           </span>
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-semibold">
-                            🐧 Linux Systemd & Nginx SSL
+                          <span className="px-2.5 py-1 rounded bg-slate-50 text-slate-700 border border-slate-200 text-[11px] font-medium flex items-center gap-1.5">
+                            <Server size={12} className="text-slate-600" />
+                            Linux Systemd & Nginx SSL
                           </span>
                         </div>
                       </div>
 
                       {/* Contact & Portfolio Links */}
-                      <div className="pt-2 flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <a
-                            href="https://tari.faridrhmn.my.id"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-[11px] font-medium flex items-center gap-1 transition-colors"
-                          >
-                            <Globe size={12} /> tari.faridrhmn.my.id
-                          </a>
-                        </div>
+                      <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-100 flex-wrap">
+                        <a
+                          href="https://tari.faridrhmn.my.id"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-200"
+                        >
+                          <Globe size={13} className="text-slate-500" />
+                          tari.faridrhmn.my.id
+                        </a>
 
                         <button
                           type="button"
                           onClick={() => setActiveHelpTab('feedback')}
-                          className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-bold flex items-center gap-1 shadow-xs transition-colors"
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
                         >
-                          <Send size={11} /> Beri Masukan / Diskusi
+                          <Send size={12} /> Kirim Masukan / Diskusi
                         </button>
                       </div>
                     </div>
@@ -458,8 +467,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {activeHelpTab === 'feedback' && (
                   <form onSubmit={handleSaveDirectFeedback} className="space-y-3.5">
-                    <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-start gap-2">
-                      <Heart size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                    <div className="p-3 rounded-lg bg-emerald-50/70 border border-emerald-200 text-emerald-900 text-xs flex items-start gap-2">
+                      <MessageSquare size={16} className="text-emerald-700 shrink-0 mt-0.5" />
                       <span>
                         Punya saran fitur baru, perbaikan alur, atau ingin mengajak kerjasama? Kirimkan langsung masukan Anda ke pengembang sistem (Bahruddin Farid).
                       </span>
@@ -475,10 +484,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           onChange={(e) => setFeedbackCategory(e.target.value)}
                           className="w-full px-3 py-1.5 border border-slate-300 rounded text-xs bg-white text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                         >
-                          <option value="Ide Fitur Baru">💡 Ide Fitur Baru</option>
-                          <option value="Laporan Bug / Kendala">🐛 Laporan Bug / Kendala</option>
-                          <option value="Saran Tampilan & Desain">🎨 Saran Tampilan & UX</option>
-                          <option value="Konsultasi & Kerjasama">🤝 Konsultasi & Kerjasama</option>
+                          <option value="Ide Fitur Baru">Ide Fitur Baru</option>
+                          <option value="Laporan Bug / Kendala">Laporan Bug / Kendala</option>
+                          <option value="Saran Tampilan & Desain">Saran Tampilan & UX</option>
+                          <option value="Konsultasi & Kerjasama">Konsultasi & Kerjasama</option>
                         </select>
                       </div>
 
@@ -516,7 +525,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <textarea
                         required
                         rows={3}
-                        placeholder="Tuliskan masukan Anda di sini. Misal: 'Bisa tambahkan fitur rekonsiliasi bank otomatis atau QRIS dinamis?'"
+                        placeholder="Tuliskan masukan Anda di sini. Misal: Rekonsiliasi bank otomatis atau QRIS dinamis."
                         value={feedbackMessage}
                         onChange={(e) => setFeedbackMessage(e.target.value)}
                         className="w-full px-3 py-2 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-emerald-500"
@@ -527,7 +536,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <button
                         type="button"
                         onClick={handleSendWhatsAppFeedback}
-                        className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors"
+                        className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold text-xs flex items-center gap-1.5 shadow-xs transition-colors"
                       >
                         <Send size={12} /> Kirim via WhatsApp
                       </button>
@@ -536,13 +545,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <button
                           type="button"
                           onClick={() => setShowHelpModal(false)}
-                          className="px-3 py-2 text-slate-600 hover:bg-slate-100 rounded font-semibold text-xs"
+                          className="px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold text-xs"
                         >
                           Tutup
                         </button>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded font-semibold text-xs shadow-xs"
+                          className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold text-xs shadow-xs"
                         >
                           Simpan Masukan
                         </button>
@@ -553,13 +562,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Footer Action */}
                 {activeHelpTab !== 'feedback' && (
-                  <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                    <span className="text-[11px] text-slate-400">
-                      Dibuat oleh <strong>Bahruddin Farid</strong> untuk kemaslahatan umat.
+                  <div className="pt-2 flex items-center justify-between border-t border-slate-100 text-[11px] text-slate-400">
+                    <span>
+                      TARI System • Versi 0.1.0 (Production)
                     </span>
                     <button
                       onClick={() => setShowHelpModal(false)}
-                      className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-xs"
+                      className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold shadow-xs"
                     >
                       Tutup
                     </button>
