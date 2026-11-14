@@ -7,7 +7,9 @@ use uuid::Uuid;
 use crate::error::AppError;
 use crate::extractors::CurrentOrganization;
 use crate::modules::organization::permissions::PermissionService;
-use super::dto::{GeneratePosterRequest, GeneratePosterResponse, PosterTemplateInfo};
+use super::dto::{
+    GeneratePosterRequest, GeneratePosterResponse, PosterFontOption, PosterTemplateInfo,
+};
 use super::templates::PosterEngine;
 
 /// Handler: GET /api/v1/poster/templates
@@ -17,6 +19,15 @@ pub async fn list_templates(
 ) -> Result<Json<Vec<PosterTemplateInfo>>, AppError> {
     PermissionService::verify_permission(&pool, &current_org.role, "poster.generate").await?;
     Ok(Json(PosterEngine::get_available_templates()))
+}
+
+/// Handler: GET /api/v1/poster/fonts
+pub async fn list_fonts(
+    State(pool): State<PgPool>,
+    current_org: CurrentOrganization,
+) -> Result<Json<Vec<PosterFontOption>>, AppError> {
+    PermissionService::verify_permission(&pool, &current_org.role, "poster.generate").await?;
+    Ok(Json(PosterEngine::get_available_fonts()))
 }
 
 /// Handler: POST /api/v1/poster/generate (Generate SVG Vector from Dynamic Variables)
